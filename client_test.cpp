@@ -123,7 +123,7 @@ int main( int argc, char* argv[] )
 	memset(str2, 0, 4096);
 	strcat(str2, "qqCode=474497857");
 	str = (char *)malloc(128);
-	len = strlen(str2);
+	int len = strlen(str2);
 	sprintf(str, "%d", len);
 
 	memset(str1, 0, 4096);
