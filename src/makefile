@@ -1,4 +1,4 @@
-EXE = PosServer			#可执行文件名
+EXE = Server			#可执行文件名
 
 all : $(EXE)
 
