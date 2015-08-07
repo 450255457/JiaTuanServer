@@ -7,7 +7,6 @@
 
 #include <unistd.h>
 #include <iostream>
-#include <mysql/mysql.h> 
 
 #include "server.h"
 #include "public_function.h"
