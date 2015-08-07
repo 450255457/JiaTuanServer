@@ -136,7 +136,7 @@ int main( int argc, char* argv[] )
 
 	strcat(str1, str2);
 	strcat(str1, "\r\n\r\n");
-	printf("%s\n", str1);
+	printf("str1 = %s\n", str1);
 
 	char request[1024] = "this is test data!";
     int epoll_fd = epoll_create( 100 );
