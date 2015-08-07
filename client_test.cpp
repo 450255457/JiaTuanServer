@@ -115,11 +115,11 @@ void close_conn( int epoll_fd, int sockfd )
 
 int main( int argc, char* argv[] )
 {	
-	cout << "./PosClient ip port num" << endl;
+	cout << "./Client ip port num" << endl;
 	char request[46] = {0};
 	memcpy(request,"\x54\x0\x0\x29\x0\x1\x51\x69\x6e\x67\x44\x5f\x56\x53\x39\x38\x31\x2e\x31\x30\x30\x31\x3b\x2f\xb2\x61\x0\x0\x10\x53\x39\x38\x30\x31\x31\x34\x2d\x31\x31\x30\x37\x39\x35\x30\x38\xe2",46);
     int epoll_fd = epoll_create( 100 );
-    start_conn( epoll_fd,20,"127.0.0.1", 8090);
+    start_conn( epoll_fd,2,"127.0.0.1", 8090);
     epoll_event events[ 10000 ];
     char buffer[ 2048 ];
     while ( 1 )
