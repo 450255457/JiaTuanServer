@@ -83,26 +83,41 @@ int main(int argc, char **argv)
 		h= select(sockfd +1, &t_set1, NULL, NULL, &tv);
 		printf("--------------->2,h = %d\n",h);
 
-		//if (h == 0) continue;
-		if (h < 0) {
-			close(sockfd);
-			printf("在读取数据报文时SELECT检测到异常，该异常导致线程终止！\n");
-			return -1;
-		};
+		FILE *fp = fopen("test.txt", "w");
+		int nRet = 0;
+		while (1)
+		{
+			// 每次接收一个字节  
+			char szRecvBuf[2] = { 0 };
+			nRet = recv(sockfd, szRecvBuf, 1, 0);
 
-		if (h > 0){
-			memset(buf, 0, 4096);
-			i= read(sockfd, buf, 4095);
-			if (i==0){
-				close(sockfd);
-				printf("读取数据报文时发现远端关闭，该线程终止！\n");
-				return -1;
+			// 接收错误  
+			if (nRet < 0)
+			{
+				printf("recv error\n");
+				fclose(fp);
+				closesocket(sockfd);
 			}
 
-			printf("buf = %s\n", buf);
+			// 度娘主动断开了连接  
+			if (0 == nRet)
+			{
+				printf("connection has beed closed by web server\n");
+				fclose(fp);
+				closesocket(sockfd);
+			}
+
+			static int flag = 0;
+			if (0 == flag)
+			{
+				printf("writing data to file\n");
+				flag = 1;
+			}
+
+			// 把度娘返回的信息写入文件  
+			fputc(szRecvBuf[0], fp);
 		}
 	}
-	close(sockfd);
 
 
 	return 0;
