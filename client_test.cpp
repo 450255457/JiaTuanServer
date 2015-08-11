@@ -118,11 +118,11 @@ int main( int argc, char* argv[] )
 {	
 	cout << "./Client ip port num" << endl;
 
-	char request[1024] = "GET http://www.ip.com/ HTTP/1.1 \r\n"
-						"Host: www.ip.com \r\n"
-						"Accept: */* \r\n"
-						"Pragma:no-cache \r\n"
-						"User-Agent:Mozilla/4.0 \r\n";
+	char *request = "GET http://www.ip.com/ HTTP/1.1 \r\n"
+		"Host: www.ip.com \r\n"
+		"Accept: */* \r\n"
+		"Pragma:no-cache \r\n"
+		"User-Agent:Mozilla/4.0 \r\n";
     int epoll_fd = epoll_create( 100 );
     start_conn( epoll_fd,2,"127.0.0.1", 8090);
     epoll_event events[ 10000 ];
