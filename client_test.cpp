@@ -19,7 +19,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define IPSTR "61.147.124.120"
+#define IPSTR "64.111.96.203"
 #define PORT 80
 #define BUFSIZE 1024
 
@@ -52,25 +52,13 @@ int main(int argc, char **argv)
 	printf("与远端建立了连接\n");
 
 	//发送数据
-	memset(str2, 0, 4096);
-	strcat(str2, "qqCode=474497857");
-	str=(char *)malloc(128);
-	len = strlen(str2);
-	sprintf(str, "%d", len);
+	char *GET = "GET http://www.ip.com/ HTTP/1.1 \r\n"
+		"Host: www.ip.com \r\n"
+		"Accept: */* \r\n"
+		"Pragma:no-cache \r\n"
+		"User-Agent:Mozilla/4.0 \r\n";
 
-	memset(str1, 0, 4096);
-	strcat(str1, "POST /webservices/qqOnlineWebService.asmx/qqCheckOnline HTTP/1.1\n");
-	strcat(str1, "Host: www.webxml.com.cn\n");
-	strcat(str1, "Content-Type: application/x-www-form-urlencoded\n");
-	strcat(str1, "Content-Length: ");
-	strcat(str1, str);
-	strcat(str1, "\n\n");
-
-	strcat(str1, str2);
-	strcat(str1, "\r\n\r\n");
-	printf("%s\n",str1);
-
-	ret = write(sockfd,str1,strlen(str1));
+	ret = write(sockfd, GET, strlen(GET));
 	if (ret < 0) {
 		printf("发送失败！错误代码是%d，错误信息是'%s'\n",errno, strerror(errno));
 		exit(0);
