@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 	printf("connect success!\n");
 
 	//·¢ËÍÊý¾Ý
-	char *GET = "GET http://www.baidu.com HTTP/1.1 \r\n"
+	char *GET = "GET www.baidu.com HTTP/1.1 \r\n\r\n"
 		"Host: www.baidu.com \r\n"
 		"Accept: */* \r\n"
 		"Pragma:no-cache \r\n"
