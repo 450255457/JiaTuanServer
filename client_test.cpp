@@ -68,8 +68,8 @@ int main()
 	while (1)
 	{
 		// 每次接收一个字节
-		char szRecvBuf[21] = { 0 };
-		nRet = recv(sockClient, szRecvBuf, 20, 0);
+		char szRecvBuf[2049] = { 0 };
+		nRet = recv(sockClient, szRecvBuf, 2048, 0);
 		printf("szRecvBuf = %s\n", szRecvBuf);
 		// 接收错误
 		if (nRet < 0)
