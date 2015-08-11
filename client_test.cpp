@@ -19,7 +19,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define IPSTR "64.111.96.203"
+#define IPSTR "180.149.132.47"
 #define PORT 80
 #define BUFSIZE 1024
 
@@ -52,8 +52,8 @@ int main(int argc, char **argv)
 	printf("与远端建立了连接\n");
 
 	//发送数据
-	char *GET = "GET http://www.ip.com/ HTTP/1.1 \r\n"
-		"Host: www.ip.com \r\n"
+	char *GET = "GET http://www.baidu.com/ HTTP/1.1 \r\n"
+		"Host: www.baidu.com \r\n"
 		"Accept: */* \r\n"
 		"Pragma:no-cache \r\n"
 		"User-Agent:Mozilla/4.0 \r\n";
