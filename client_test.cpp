@@ -16,10 +16,10 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <sys/time.h>
+#include <netdb.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define IPSTR "115.239.210.27"
 #define PORT 80
 #define BUFSIZE 1024
 
@@ -31,7 +31,12 @@ int main(int argc, char **argv)
 	socklen_t len;
 	fd_set   t_set1;
 	struct timeval  tv;
+	char szWeb[] = "www.baidu.com";
+	HOSTENT *pHost = gethostbyname(szWeb);
 
+	// 度娘的ip地址  
+	const char* pIPAddr = inet_ntoa(*((struct in_addr *)pHost->h_addr));
+	printf("web server ip is : %s\n", pIPAddr);
 	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
 		printf("创建网络连接失败,本线程即将终止---socket error!\n");
 		exit(0);
@@ -40,7 +45,7 @@ int main(int argc, char **argv)
 	bzero(&servaddr, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_port = htons(PORT);
-	if (inet_pton(AF_INET, IPSTR, &servaddr.sin_addr) <= 0 ){
+	if (inet_pton(AF_INET, pIPAddr, &servaddr.sin_addr) <= 0){
 		printf("创建网络连接失败,本线程即将终止--inet_pton error!\n");
 		exit(0);
 	};
@@ -94,7 +99,7 @@ int main(int argc, char **argv)
 				return -1;
 			}
 
-			printf("%s\n", buf);
+			printf("buf = %s\n", buf);
 		}
 	}
 	close(sockfd);
