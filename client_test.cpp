@@ -19,7 +19,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define IPSTR "180.149.132.47"
+#define IPSTR "115.239.210.27"
 #define PORT 80
 #define BUFSIZE 1024
 
@@ -49,10 +49,10 @@ int main(int argc, char **argv)
 		printf("连接到服务器失败,connect error!\n");
 		exit(0);
 	}
-	printf("与远端建立了连接\n");
+	printf("connect success!\n");
 
 	//发送数据
-	char *GET = "GET http://www.baidu.com/ HTTP/1.1 \r\n"
+	char *GET = "GET http://www.baidu.com HTTP/1.1 \r\n"
 		"Host: www.baidu.com \r\n"
 		"Accept: */* \r\n"
 		"Pragma:no-cache \r\n"
@@ -60,10 +60,10 @@ int main(int argc, char **argv)
 
 	ret = write(sockfd, GET, strlen(GET));
 	if (ret < 0) {
-		printf("发送失败！错误代码是%d，错误信息是'%s'\n",errno, strerror(errno));
+		printf("Error,%d,error_info = %s'\n",errno, strerror(errno));
 		exit(0);
 	}else{
-		printf("消息发送成功，共发送了%d个字节！\n\n", ret);
+		printf("send size:%d\n\n", ret);
 	}
 
 	FD_ZERO(&t_set1);
@@ -76,7 +76,7 @@ int main(int argc, char **argv)
 		h= 0;
 		printf("--------------->1");
 		h= select(sockfd +1, &t_set1, NULL, NULL, &tv);
-		printf("--------------->2");
+		printf("--------------->2,h = %d\n",h);
 
 		//if (h == 0) continue;
 		if (h < 0) {
@@ -103,6 +103,20 @@ int main(int argc, char **argv)
 	return 0;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+//以下为注释
 #if 0
 #include <iostream>
 #include <stdlib.h>
