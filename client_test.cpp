@@ -34,13 +34,13 @@ int main()
 	printf("web server ip is : %s\n", pIPAddr);
 
 	// 度娘服务器信息
-	SOCKADDR_IN  webServerAddr;
+	struct sockaddr_in  webServerAddr;
 	webServerAddr.sin_family = AF_INET;
 	webServerAddr.sin_addr.S_un.S_addr = inet_addr(pIPAddr);
 	webServerAddr.sin_port = htons(80);
 
 	// 创建客户端通信socket
-	SOCKET sockClient = socket(AF_INET, SOCK_STREAM, 0);
+	int sockClient = socket(AF_INET, SOCK_STREAM, 0);
 
 	// 去连接度娘
 	int nRet = connect(sockClient, (struct sockaddr*)&webServerAddr, sizeof(webServerAddr));
