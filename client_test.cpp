@@ -118,27 +118,11 @@ int main( int argc, char* argv[] )
 {	
 	cout << "./Client ip port num" << endl;
 
-	char str1[4096], str2[4096], *str;
-	//·¢ËÍÊý¾Ý
-	memset(str2, 0, 4096);
-	strcat(str2, "qqCode=474497857");
-	str = (char *)malloc(128);
-	int len = strlen(str2);
-	sprintf(str, "%d", len);
-
-	memset(str1, 0, 4096);
-	strcat(str1, "POST /webservices/qqOnlineWebService.asmx/qqCheckOnline HTTP/1.1\n");
-	strcat(str1, "Host: www.webxml.com.cn\n");
-	strcat(str1, "Content-Type: application/x-www-form-urlencoded\n");
-	strcat(str1, "Content-Length: ");
-	strcat(str1, str);
-	strcat(str1, "\n\n");
-
-	strcat(str1, str2);
-	strcat(str1, "\r\n\r\n");
-	printf("str1 = %s\n", str1);
-
-	char request[1024] = "this is test data!";
+	char request[1024] = "GET http://www.ip.com/ HTTP/1.1 \r\n"
+						"Host: www.ip.com \r\n"
+						"Accept: */* \r\n"
+						"Pragma:no-cache \r\n"
+						"User-Agent:Mozilla/4.0 \r\n";
     int epoll_fd = epoll_create( 100 );
     start_conn( epoll_fd,2,"127.0.0.1", 8090);
     epoll_event events[ 10000 ];
@@ -162,7 +146,7 @@ int main( int argc, char* argv[] )
             }
             else if( events[i].events & EPOLLOUT ) 
             {
-				if (!write_nbytes(sockfd, str1, strlen(str1)))
+				if (!write_nbytes(sockfd, request, strlen(request)))
                 {
                     close_conn( epoll_fd, sockfd );
                 }
