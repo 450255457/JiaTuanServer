@@ -36,7 +36,7 @@ int main()
 	// 度娘服务器信息
 	struct sockaddr_in  webServerAddr;
 	webServerAddr.sin_family = AF_INET;
-	webServerAddr.sin_addr.s_addr = htonl(pIPAddr);
+	webServerAddr.sin_addr.s_addr = inet_addr(pIPAddr);
 	webServerAddr.sin_port = htons(80);
 
 	// 创建客户端通信socket
