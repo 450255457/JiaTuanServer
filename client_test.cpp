@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 	fd_set   t_set1;
 	struct timeval  tv;
 	char szWeb[] = "www.baidu.com";
-	HOSTENT *pHost = gethostbyname(szWeb);
+	hostent *pHost = gethostbyname(szWeb);
 
 	// ¶ÈÄïµÄipµØÖ·  
 	const char* pIPAddr = inet_ntoa(*((struct in_addr *)pHost->h_addr));
