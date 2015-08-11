@@ -96,7 +96,7 @@ int main(int argc, char **argv)
 			{
 				printf("recv error\n");
 				fclose(fp);
-				closesocket(sockfd);
+				close(sockfd);
 			}
 
 			// 度娘主动断开了连接  
@@ -104,7 +104,7 @@ int main(int argc, char **argv)
 			{
 				printf("connection has beed closed by web server\n");
 				fclose(fp);
-				closesocket(sockfd);
+				close(sockfd);
 			}
 
 			static int flag = 0;
