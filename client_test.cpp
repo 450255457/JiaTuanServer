@@ -25,7 +25,6 @@
 int main()
 {
 
-	// 我们来访问一下度娘
 	char szWeb[] = "www.baidu.com"; // !!!强调: 你的pc一定要能ping通www.baidu.com, 否则程序不能正常运行就不要找我啦
 	hostent *pHost = gethostbyname(szWeb);
 
@@ -42,7 +41,6 @@ int main()
 	// 创建客户端通信socket
 	int sockClient = socket(AF_INET, SOCK_STREAM, 0);
 
-	// 去连接度娘
 	int nRet = connect(sockClient, (struct sockaddr*)&webServerAddr, sizeof(webServerAddr));
 	if (nRet < 0)
 	{
@@ -70,9 +68,9 @@ int main()
 	while (1)
 	{
 		// 每次接收一个字节
-		char szRecvBuf[2] = { 0 };
-		nRet = recv(sockClient, szRecvBuf, 1, 0);
-
+		char szRecvBuf[21] = { 0 };
+		nRet = recv(sockClient, szRecvBuf, 20, 0);
+		printf("szRecvBuf = %s\n", szRecvBuf);
 		// 接收错误
 		if (nRet < 0)
 		{
