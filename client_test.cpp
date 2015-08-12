@@ -25,14 +25,13 @@
 int main()
 {
 
-	char szWeb[] = "www.baidu.com"; // !!!强调: 你的pc一定要能ping通www.baidu.com, 否则程序不能正常运行就不要找我啦
+	char szWeb[] = "www.baidu.com";
 	hostent *pHost = gethostbyname(szWeb);
 
 	// 度娘的ip地址
 	const char* pIPAddr = inet_ntoa(*((struct in_addr *)pHost->h_addr));
 	printf("web server ip is : %s\n", pIPAddr);
 
-	// 度娘服务器信息
 	struct sockaddr_in  webServerAddr;
 	webServerAddr.sin_family = AF_INET;
 	webServerAddr.sin_addr.s_addr = inet_addr(pIPAddr);
@@ -50,9 +49,9 @@ int main()
 
 	// 准备向度娘发送http的GET请求
 	char szHttpRest[1024] = { 0 };
-	//sprintf(szHttpRest, "GET /index.html HTTP/1.1\r\nHost:%s\r\nConnection: Keep-Alive\r\n\r\n", szWeb);
-	sprintf(szHttpRest, "GET / HTTP/1.1\r\nHost:%s\r\n\r\n", szWeb);
-	printf("\n---------------------send is :---------------------\n");
+	sprintf(szHttpRest, "GET /index.html HTTP/1.1\r\nHost:%s\r\nConnection: Keep-Alive\r\n\r\n", szWeb);
+	//sprintf(szHttpRest, "GET / HTTP/1.1\r\nHost:%s\r\n\r\n", szWeb);
+	printf("\n---------------------sendbuf is :---------------------\n");
 	printf("%s\n", szHttpRest);
 
 	// 利用tcp向度娘发送http的GET请求
@@ -67,7 +66,6 @@ int main()
 	FILE *fp = fopen("test.txt", "w");
 	while (1)
 	{
-		// 每次接收一个字节
 		char szRecvBuf[2049] = { 0 };
 		nRet = recv(sockClient, szRecvBuf, 2048, 0);
 		printf("szRecvBuf = %s\n", szRecvBuf);
