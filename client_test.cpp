@@ -1,4 +1,4 @@
-/*****************************************
+ï»¿/*****************************************
 > File Name : client_test.cpp
 > Description : the test client
 > Author : linden
@@ -20,24 +20,25 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-// ÓÃC´úÂëÄ£Äâä¯ÀÀÆ÷IE(http client)·ÃÎÊweb(http server)µÄĞĞÎª
+// ç”¨Cä»£ç æ¨¡æ‹Ÿæµè§ˆå™¨IE(http client)è®¿é—®web(http server)çš„è¡Œä¸º
 
 int main()
 {
 
-	char szWeb[] = "www.baidu.com";
+	//char szWeb[] = "www.baidu.com";
+	char szWeb[] = "127.0.0.1";
 	hostent *pHost = gethostbyname(szWeb);
 
-	// ¶ÈÄïµÄipµØÖ·
+	// åº¦å¨˜çš„ipåœ°å€
 	const char* pIPAddr = inet_ntoa(*((struct in_addr *)pHost->h_addr));
 	printf("web server ip is : %s\n", pIPAddr);
 
 	struct sockaddr_in  webServerAddr;
 	webServerAddr.sin_family = AF_INET;
 	webServerAddr.sin_addr.s_addr = inet_addr(pIPAddr);
-	webServerAddr.sin_port = htons(80);
+	webServerAddr.sin_port = htons(8090);
 
-	// ´´½¨¿Í»§¶ËÍ¨ĞÅsocket
+	// åˆ›å»ºå®¢æˆ·ç«¯é€šä¿¡socket
 	int sockClient = socket(AF_INET, SOCK_STREAM, 0);
 
 	int nRet = connect(sockClient, (struct sockaddr*)&webServerAddr, sizeof(webServerAddr));
@@ -47,14 +48,14 @@ int main()
 		return 1;
 	}
 
-	// ×¼±¸Ïò¶ÈÄï·¢ËÍhttpµÄGETÇëÇó
+	// å‡†å¤‡å‘åº¦å¨˜å‘é€httpçš„GETè¯·æ±‚
 	char szHttpRest[1024] = { 0 };
 	sprintf(szHttpRest, "GET /index.html HTTP/1.1\r\nHost:%s\r\nConnection: Keep-Alive\r\n\r\n", szWeb);
 	//sprintf(szHttpRest, "GET / HTTP/1.1\r\nHost:%s\r\n\r\n", szWeb);
 	printf("\n---------------------sendbuf is :---------------------\n");
 	printf("%s\n", szHttpRest);
 
-	// ÀûÓÃtcpÏò¶ÈÄï·¢ËÍhttpµÄGETÇëÇó
+	// åˆ©ç”¨tcpå‘åº¦å¨˜å‘é€httpçš„GETè¯·æ±‚
 	nRet = send(sockClient, szHttpRest, strlen(szHttpRest) + 1, 0);
 	if (nRet < 0)
 	{
@@ -62,21 +63,21 @@ int main()
 		return 1;
 	}
 
-	// °Ñ¶ÈÄï·µ»ØµÄĞÅÏ¢±£´æÔÚÎÄ¼ştest.txtÖĞ
+	// æŠŠåº¦å¨˜è¿”å›çš„ä¿¡æ¯ä¿å­˜åœ¨æ–‡ä»¶test.txtä¸­
 	FILE *fp = fopen("test.txt", "w");
 	while (1)
 	{
 		char szRecvBuf[2049] = { 0 };
 		nRet = recv(sockClient, szRecvBuf, 2048, 0);
 		printf("szRecvBuf = %s\n", szRecvBuf);
-		// ½ÓÊÕ´íÎó
+		// æ¥æ”¶é”™è¯¯
 		if (nRet < 0)
 		{
 			printf("recv error\n");
 			goto LABEL;
 		}
 
-		// ¶ÈÄïÖ÷¶¯¶Ï¿ªÁËÁ¬½Ó
+		// åº¦å¨˜ä¸»åŠ¨æ–­å¼€äº†è¿æ¥
 		if (0 == nRet)
 		{
 			printf("connection has beed closed by web server\n");
@@ -90,12 +91,12 @@ int main()
 			flag = 1;
 		}
 
-		// °Ñ¶ÈÄï·µ»ØµÄĞÅÏ¢Ğ´ÈëÎÄ¼ş
+		// æŠŠåº¦å¨˜è¿”å›çš„ä¿¡æ¯å†™å…¥æ–‡ä»¶
 		fputc(szRecvBuf[0], fp);
 	}
 
 
-LABEL: // Õâ¸öµ¥´Ê²»ÒªĞ´´íÀ²£¬ ºÜ¶àÍ¯Ğ¬ÈİÒ×Ğ´´í
+LABEL: // è¿™ä¸ªå•è¯ä¸è¦å†™é”™å•¦ï¼Œ å¾ˆå¤šç«¥é‹å®¹æ˜“å†™é”™
 	fclose(fp);
 	close(sockClient);
 
