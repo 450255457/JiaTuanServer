@@ -328,10 +328,10 @@ main(int argc, char **argv)
 	if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
 		return (1);
 #endif
-	if (argc < 2) {
+	/*if (argc < 2) {
 		syntax();
 		return 1;
-	}
+	}*/
 
 	base = event_base_new();
 	if (!base) {
