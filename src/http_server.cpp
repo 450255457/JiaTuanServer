@@ -5,6 +5,11 @@
 > Date: 2015-08-25
 *******************************************/
 
+#include <string.h>
+
+#include <buffer.h>
+#include <http_compat.h>
+
 void http_handler(struct evhttp_request *req, void *arg)
 {
 	struct evbuffer *buf;
