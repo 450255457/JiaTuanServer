@@ -321,6 +321,7 @@ main(int argc, char **argv)
 	struct evhttp_bound_socket *handle;
 
 	unsigned short port = 8090;
+	/*
 #ifdef WIN32
 	WSADATA WSAData;
 	WSAStartup(0x101, &WSAData);
@@ -328,7 +329,7 @@ main(int argc, char **argv)
 	if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
 		return (1);
 #endif
-	/*if (argc < 2) {
+	if (argc < 2) {
 		syntax();
 		return 1;
 	}*/
