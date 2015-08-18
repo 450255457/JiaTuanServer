@@ -7,8 +7,8 @@
 
 #include <string.h>
 
-#include <../libevent/include/event2/buffer.h>
-#include <../libevent/include/event2/http_compat.h>
+#include "../libevent/include/event2/buffer.h"
+#include "../libevent/include/event2/http_compat.h"
 
 void http_handler(struct evhttp_request *req, void *arg)
 {
