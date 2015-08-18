@@ -148,7 +148,7 @@ static void
 send_document_cb(struct evhttp_request *req, void *arg)
 {
 	struct evbuffer *evb = NULL;
-	const char *docroot = arg;
+	const char *docroot = (const char *)arg;
 	const char *uri = evhttp_request_get_uri(req);
 	struct evhttp_uri *decoded = NULL;
 	const char *path;
@@ -189,7 +189,7 @@ send_document_cb(struct evhttp_request *req, void *arg)
 		goto err;
 
 	len = strlen(decoded_path) + strlen(docroot) + 2;
-	if (!(whole_path = malloc(len))) {
+	if (!(whole_path = static_cast<char*>(malloc(len)))) {
 		perror("malloc");
 		goto err;
 	}
