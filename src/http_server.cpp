@@ -52,7 +52,7 @@ that you would never want to do in a production webserver. Caveat hackor!
 #endif
 
 /* Compatibility for possible missing IPv6 declarations */
-#include "/libevent/util-internal.h"
+#include "libevent/util-internal.h"
 
 #ifdef WIN32
 #define stat _stat
