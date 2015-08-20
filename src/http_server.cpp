@@ -328,7 +328,7 @@ main(int argc, char **argv)
 	struct evhttp *http;
 	struct evhttp_bound_socket *handle;
 
-	unsigned short port = 0;
+	unsigned short port = 8090;
 #ifdef WIN32
 	WSADATA WSAData;
 	WSAStartup(0x101, &WSAData);
@@ -336,10 +336,10 @@ main(int argc, char **argv)
 	if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
 		return (1);
 #endif
-	if (argc < 2) {
-		syntax();
-		return 1;
-	}
+	//if (argc < 2) {
+	//	syntax();
+	//	return 1;
+	//}
 
 	base = event_base_new();
 	if (!base) {
@@ -359,7 +359,7 @@ main(int argc, char **argv)
 
 	/* We want to accept arbitrary requests, so we need to set a "generic"
 	* cb.  We can also add callbacks for specific paths. */
-	evhttp_set_gencb(http, send_document_cb, argv[1]);
+	evhttp_set_gencb(http, send_document_cb, NULL);
 
 	/* Now we tell the evhttp what port to listen on */
 	handle = evhttp_bind_socket_with_handle(http, "0.0.0.0", port);
