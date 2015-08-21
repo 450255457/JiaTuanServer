@@ -1,29 +1,12 @@
 /*****************************************
-> File Name : server.h
-> Description : server head file
+> File Name : http_server.h
+> Description : http_server head file
 > Author : linden
 > Date : 2015-08-07
 *******************************************/
 
-#ifndef _SERVER_H
-#define _SERVER_H
-
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <iostream>
-#include <errno.h>
-#include <string.h>
-#include <fcntl.h>
-#include <pthread.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <sys/epoll.h>
-#include <sys/types.h>
-
-#include "locker.h"
-#include "thread_pool.h"
+#ifndef _HTTP_SERVER_H
+#define _HTTP_SERVER_H
 
 #define IPADDRESS	"0.0.0.0"
 #define PORT		8090
@@ -32,11 +15,11 @@
 #define EPOLLEVENTS	1000
 #define BACKLOG 5		//最大连接数
 
-class CServer
+class CHttpServer
 {  
 public:  
-    CServer();  
-    ~CServer();
+	CHttpServer();
+	~CHttpServer();
 	
 	int socket_bind(const char *ip,int nPort);
 	int do_epoll(int socketfd);

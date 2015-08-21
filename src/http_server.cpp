@@ -26,6 +26,7 @@ that you would never want to do in a production webserver. Caveat hackor!
 #include <fcntl.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <err.h>
 
 #include <event2/event.h>
 #include <event2/http.h>
@@ -66,8 +67,7 @@ static const struct table_entry {
 };
 
 /* Try to guess a good content-type for 'path' */
-static const char *
-guess_content_type(const char *path)
+static const char *guess_content_type(const char *path)
 {
 	const char *last_period, *extension;
 	const struct table_entry *ent;
@@ -134,12 +134,13 @@ dump_request_cb(struct evhttp_request *req, void *arg)
 * any other callback.  Like any evhttp server callback, it has a simple job:
 * it must eventually call evhttp_send_error() or evhttp_send_reply().
 */
-static void
-send_document_cb(struct evhttp_request *req, void *arg)
+static void send_document_cb(struct evhttp_request *req, void *arg)
 {
 	struct evbuffer *buf;
 	buf = evbuffer_new();
-
+	if (buf == NULL)
+		err(1, “failed to create response buffer”);
+	evbuffer_add_printf(buf, “Requested: %s / n”, evhttp_request_uri(req));
 	// 输出
 	evhttp_send_reply(req, HTTP_OK, "OK", buf);
 
@@ -147,8 +148,7 @@ send_document_cb(struct evhttp_request *req, void *arg)
 	evbuffer_free(buf);
 }
 
-int
-main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
 	struct event_base *base;
 	struct evhttp *http;
@@ -173,11 +173,11 @@ main(int argc, char **argv)
 	}
 
 	/* The /dump URI will dump all requests to stdout and say 200 ok. */
-	evhttp_set_cb(http, "/dump", dump_request_cb, NULL);
+	evhttp_set_cb(http, "/dump", dump_request_cb, NULL);	//设置特定的URI的callback
 
 	/* We want to accept arbitrary requests, so we need to set a "generic"
 	* cb.  We can also add callbacks for specific paths. */
-	evhttp_set_gencb(http, send_document_cb, NULL);
+	evhttp_set_gencb(http, send_document_cb, NULL);		// 设置generic的请求处理函数
 
 	/* Now we tell the evhttp what port to listen on */
 	handle = evhttp_bind_socket_with_handle(http, "0.0.0.0", port);
@@ -187,47 +187,45 @@ main(int argc, char **argv)
 		return 1;
 	}
 
-	{
-		/* Extract and display the address we're listening on. */
-		struct sockaddr_storage ss;
-		evutil_socket_t fd;
-		ev_socklen_t socklen = sizeof(ss);
-		char addrbuf[128];
-		void *inaddr;
-		const char *addr;
-		int got_port = -1;
-		fd = evhttp_bound_socket_get_fd(handle);
-		memset(&ss, 0, sizeof(ss));
-		if (getsockname(fd, (struct sockaddr *)&ss, &socklen)) {
-			perror("getsockname() failed");
-			return 1;
-		}
-		if (ss.ss_family == AF_INET) {
-			got_port = ntohs(((struct sockaddr_in*)&ss)->sin_port);
-			inaddr = &((struct sockaddr_in*)&ss)->sin_addr;
-		}
-		else if (ss.ss_family == AF_INET6) {
-			got_port = ntohs(((struct sockaddr_in6*)&ss)->sin6_port);
-			inaddr = &((struct sockaddr_in6*)&ss)->sin6_addr;
-		}
-		else {
-			fprintf(stderr, "Weird address family %d\n",
-				ss.ss_family);
-			return 1;
-		}
-		addr = evutil_inet_ntop(ss.ss_family, inaddr, addrbuf,
-			sizeof(addrbuf));
-		if (addr) {
-			printf("Listening on %s:%d\n", addr, got_port);
-			evutil_snprintf(uri_root, sizeof(uri_root),
-				"http://%s:%d", addr, got_port);
-		}
-		else {
-			fprintf(stderr, "evutil_inet_ntop failed\n");
-			return 1;
-		}
+	/* Extract and display the address we're listening on. */
+	struct sockaddr_storage ss;
+	evutil_socket_t fd;
+	ev_socklen_t socklen = sizeof(ss);
+	char addrbuf[128];
+	void *inaddr;
+	const char *addr;
+	int got_port = -1;
+	fd = evhttp_bound_socket_get_fd(handle);
+	memset(&ss, 0, sizeof(ss));
+	if (getsockname(fd, (struct sockaddr *)&ss, &socklen)) {
+		perror("getsockname() failed");
+		return 1;
 	}
-
+	if (ss.ss_family == AF_INET) {
+		got_port = ntohs(((struct sockaddr_in*)&ss)->sin_port);
+		inaddr = &((struct sockaddr_in*)&ss)->sin_addr;
+	}
+	else if (ss.ss_family == AF_INET6) {
+		got_port = ntohs(((struct sockaddr_in6*)&ss)->sin6_port);
+		inaddr = &((struct sockaddr_in6*)&ss)->sin6_addr;
+	}
+	else {
+		fprintf(stderr, "Weird address family %d\n",
+			ss.ss_family);
+		return 1;
+	}
+	addr = evutil_inet_ntop(ss.ss_family, inaddr, addrbuf,
+		sizeof(addrbuf));
+	if (addr) {
+		printf("Listening on %s:%d\n", addr, got_port);
+		evutil_snprintf(uri_root, sizeof(uri_root),
+			"http://%s:%d", addr, got_port);
+	}
+	else {
+		fprintf(stderr, "evutil_inet_ntop failed\n");
+		return 1;
+	}
+	
 	event_base_dispatch(base);
 
 	return 0;
