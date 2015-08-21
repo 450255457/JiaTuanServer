@@ -139,8 +139,8 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 	struct evbuffer *buf;
 	buf = evbuffer_new();
 	if (buf == NULL)
-		err(1, “failed to create response buffer”);
-	evbuffer_add_printf(buf, “Requested: %s / n”, evhttp_request_uri(req));
+		err(1, "failed to create response buffer");
+	evbuffer_add_printf(buf,"Requested: %s / n", evhttp_request_uri(req));
 	// 输出
 	evhttp_send_reply(req, HTTP_OK, "OK", buf);
 
