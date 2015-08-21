@@ -43,7 +43,7 @@ that you would never want to do in a production webserver. Caveat hackor!
 #include <event2/buffer.h>
 #include <event2/util.h>
 #include <event2/keyvalq_struct.h>
-#include <event2/http_compath.h>
+#include <event2/http_compat.h>
 
 #ifdef _EVENT_HAVE_NETINET_IN_H
 #include <netinet/in.h>
