@@ -28,6 +28,8 @@ that you would never want to do in a production webserver. Caveat hackor!
 #include <dirent.h>
 #include <err.h>
 
+#include <json/json.h>
+
 #include <event2/event.h>
 #include <event2/http.h>
 #include <event2/buffer.h>
@@ -86,8 +88,7 @@ not_found:
 
 /* Callback used for the /dump URI, and for every non-GET request:
 * dumps all information to stdout and gives back a trivial 200 ok */
-static void
-dump_request_cb(struct evhttp_request *req, void *arg)
+static void dump_request_cb(struct evhttp_request *req, void *arg)
 {
 	const char *cmdtype;
 	struct evkeyvalq *headers;
@@ -141,6 +142,16 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 	if (buf == NULL)
 		err(1, "failed to create response buffer");
 	evbuffer_add_printf(buf,"Requested: %s / n", evhttp_request_uri(req));
+	Json::Reader reader;
+	Json::Value value;
+	if (reader.parse(evhttp_request_uri(req), value))
+	{
+		if (!value["id"].isNull())
+		{
+			cout << value["id"].asInt() << endl;
+			cout << value["name"].asString() << endl;
+		}
+	}
 	// 输出
 	evhttp_send_reply(req, HTTP_OK, "OK", buf);
 
