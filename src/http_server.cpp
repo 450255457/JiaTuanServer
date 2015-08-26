@@ -29,6 +29,7 @@ that you would never want to do in a production webserver. Caveat hackor!
 #include <err.h>
 
 #include <json/json.h>
+#include "http_parser.h"
 
 #include <event2/event.h>
 #include <event2/http.h>
@@ -68,6 +69,19 @@ static const struct table_entry {
 	{ "pdf", "application/pdf" },
 	{ "ps", "application/postsript" },
 	{ NULL, NULL },
+};
+
+static http_parser_settings settings_null =
+{ .on_message_begin = 0
+, .on_header_field = 0
+, .on_header_value = 0
+, .on_url = 0
+, .on_status = 0
+, .on_body = 0
+, .on_headers_complete = 0
+, .on_message_complete = 0
+, .on_chunk_header = 0
+, .on_chunk_complete = 0
 };
 
 /* Try to guess a good content-type for 'path' */
@@ -144,7 +158,16 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 	if (buf == NULL)
 		err(1, "failed to create response buffer");
 	evbuffer_add_printf(buf,"Requested = %s / n", evhttp_request_uri(req));
-	Json::Reader reader;
+	http_parser parser;
+	http_parser_init(&parser, HTTP_REQUEST);
+	size_t parsed;
+	const char *parser_buf;
+	parser_buf = "GET / HTTP/1.1\r\nheader: value\nhdr: value\r\n";
+	parsed = http_parser_execute(&parser, &settings_null, parser_buf, strlen(parser_buf));
+	assert(parsed == strlen(parser_buf));
+
+	assert(parser.nread == strlen(parser_buf));
+	/*Json::Reader reader;
 	Json::Value value;
 	if (reader.parse(evhttp_request_uri(req), value))
 	{
@@ -153,7 +176,7 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 			cout << value["id"].asInt() << endl;
 			cout << value["name"].asString() << endl;
 		}
-	}
+	}*/
 	// 输出
 	evhttp_send_reply(req, HTTP_OK, "OK", buf);
 
