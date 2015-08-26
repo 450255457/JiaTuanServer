@@ -143,7 +143,7 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 	buf = evbuffer_new();
 	if (buf == NULL)
 		err(1, "failed to create response buffer");
-	evbuffer_add_printf(buf,"Requested: %s / n", evhttp_request_uri(req));
+	evbuffer_add_printf(buf,"Requested = %s / n", evhttp_request_uri(req));
 	Json::Reader reader;
 	Json::Value value;
 	if (reader.parse(evhttp_request_uri(req), value))
@@ -186,7 +186,7 @@ int	main(int argc, char **argv)
 	}
 
 	/* The /dump URI will dump all requests to stdout and say 200 ok. */
-	evhttp_set_cb(http, "/dump", dump_request_cb, NULL);	//设置特定的URI的callback
+//	evhttp_set_cb(http, "/dump", dump_request_cb, NULL);	//设置特定的URI的callback
 
 	/* We want to accept arbitrary requests, so we need to set a "generic"
 	* cb.  We can also add callbacks for specific paths. */
