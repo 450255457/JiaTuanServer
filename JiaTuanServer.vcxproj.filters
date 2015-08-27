@@ -447,6 +447,9 @@
     <ClCompile Include="src\libevent\win32select.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\http_parser.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\locker.h">
@@ -462,9 +465,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\data_base.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\server.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="libevent\compat\sys\queue.h">
@@ -807,6 +807,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\libevent\util-internal.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\http_server.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\http_parser.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

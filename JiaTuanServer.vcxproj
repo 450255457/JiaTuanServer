@@ -135,6 +135,7 @@
     <ClCompile Include="libevent\test\tinytest.c" />
     <ClCompile Include="libevent\win32select.c" />
     <ClCompile Include="src\data_base.cpp" />
+    <ClCompile Include="src\http_parser.c" />
     <ClCompile Include="src\libevent\arc4random.c" />
     <ClCompile Include="src\libevent\buffer.c" />
     <ClCompile Include="src\libevent\bufferevent.c" />
@@ -268,6 +269,7 @@
     <ClInclude Include="libevent\WIN32-Code\event2\event-config.h" />
     <ClInclude Include="libevent\WIN32-Code\tree.h" />
     <ClInclude Include="src\data_base.h" />
+    <ClInclude Include="src\http_parser.h" />
     <ClInclude Include="src\libevent\bufferevent-internal.h" />
     <ClInclude Include="src\libevent\changelist-internal.h" />
     <ClInclude Include="src\libevent\compat\sys\queue.h" />
@@ -327,7 +329,7 @@
     <ClInclude Include="src\libevent\WIN32-Code\tree.h" />
     <ClInclude Include="src\locker.h" />
     <ClInclude Include="src\public_function.h" />
-    <ClInclude Include="src\server.h" />
+    <ClInclude Include="src\http_server.h" />
     <ClInclude Include="src\thread_pool.h" />
     <ClInclude Include="src\thread_pool9.h" />
   </ItemGroup>
