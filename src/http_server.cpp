@@ -143,18 +143,24 @@ static void dump_request_cb(struct evhttp_request *req, void *arg)
 static void send_document_cb(struct evhttp_request *req, void *arg)
 {
 	printf("Run send_document_cb.\n");
-	
+	char tmp[1024] = "\0";
+	char output[2048] = "\0";
 	struct evbuffer *evb = NULL;
 	const char *docroot = "/usr/share/nginx/html/JiaTuanWeb";
 	const char *uri = evhttp_request_get_uri(req);
 	struct evhttp_uri *decoded = NULL;
 	const char *path;
 	char *decoded_path;
+	char *decoded_uri = NULL;
 	char *whole_path = NULL;
 	size_t len;
 	int fd = -1;
 	struct stat st;
-
+	sprintf(tmp, "uri=%s\n", uri);
+	strcat(output, tmp);
+	decoded_uri = evhttp_decode_uri(uri);
+	sprintf(tmp, "decoded_uri=%s\n", decoded_uri);
+	strcat(output, tmp);
 	if (evhttp_request_get_command(req) != EVHTTP_REQ_GET) {
 		dump_request_cb(req, arg);
 		return;
@@ -166,12 +172,13 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 	evhttp_parse_query(uritest, &args);
 	//然后通过evhttp_find_header等函数获取各个参数及对应的值
 	evhttp_find_header(&args, "q"); //得到test
-	char tmp[1024];
+	
 	sprintf(tmp, "q=%s\n", evhttp_find_header(&args, "q"));
 	printf("tmp = %s\n",tmp);
 	evhttp_find_header(&args, "s"); //得到some thing 
-	sprintf(tmp, "q=%s\n", evhttp_find_header(&args, "s"));
+	sprintf(tmp, "s=%s\n", evhttp_find_header(&args, "s"));
 	printf("tmp = %s\n", tmp);
+
 	/* Decode the URI */
 	decoded = evhttp_uri_parse(uri);
 	if (!decoded) {
@@ -244,8 +251,7 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 
 			closedir(d);
 
-			evhttp_add_header(evhttp_request_get_output_headers(req),
-				"Content-Type", "text/html");
+			evhttp_add_header(evhttp_request_get_output_headers(req),"Content-Type", "text/html");
 		}
 	}
 	else {
@@ -263,8 +269,7 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 			perror("fstat");
 			goto err;
 		}
-		evhttp_add_header(evhttp_request_get_output_headers(req),
-			"Content-Type", type);
+		evhttp_add_header(evhttp_request_get_output_headers(req),"Content-Type", type);
 		evbuffer_add_file(evb, fd, 0, st.st_size);
 	}
 
