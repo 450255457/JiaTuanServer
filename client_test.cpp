@@ -50,9 +50,9 @@ int main()
 
 	// 准备向度娘发送http的GET请求
 	char szHttpRest[1024] = { 0 };
-	//sprintf(szHttpRest, "GET /index.html HTTP/1.1\r\nHost:%s\r\nConnection: Keep-Alive\r\n\r\n", szWeb);
+	sprintf(szHttpRest, "GET /index.html HTTP/1.1\r\nHost:%s\r\nConnection: Keep-Alive\r\n\r\n", szWeb);
 	//sprintf(szHttpRest, "GET / HTTP/1.1\r\nHost:%s\r\n\r\n", szWeb);
-	sprintf(szHttpRest, "GET / HTTP/1.1\r\nHost:%s\r\nbody:{\"id\":1,\"name\":\"kurama\"}\r\n\r\n", szWeb);
+	//sprintf(szHttpRest, "GET / HTTP/1.1\r\nHost:%s\r\nbody:{\"id\":1,\"name\":\"kurama\"}\r\n\r\n", szWeb);
 	printf("\n---------------------sendbuf is :---------------------\n");
 	printf("%s\n", szHttpRest);
 
