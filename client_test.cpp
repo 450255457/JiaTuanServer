@@ -36,7 +36,7 @@ int main()
 	struct sockaddr_in  webServerAddr;
 	webServerAddr.sin_family = AF_INET;
 	webServerAddr.sin_addr.s_addr = inet_addr(pIPAddr);
-	webServerAddr.sin_port = htons(8090);
+	webServerAddr.sin_port = htons(80);
 
 	// 创建客户端通信socket
 	int sockClient = socket(AF_INET, SOCK_STREAM, 0);
