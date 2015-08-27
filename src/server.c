@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 			printf("Server Accept Failed!\n");
 			break;
 		}
-
+		printf("Server accpet %d\n",new_server_socket);
 		char buffer[BUFFER_SIZE];
 		bzero(buffer, BUFFER_SIZE);
 		length = recv(new_server_socket, buffer, BUFFER_SIZE, 0);
