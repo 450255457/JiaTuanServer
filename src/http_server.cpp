@@ -37,6 +37,7 @@ that you would never want to do in a production webserver. Caveat hackor!
 #include <event2/util.h>
 #include <event2/keyvalq_struct.h>
 #include <event2/http_compat.h>
+#include <event2/buffer_compat.h >
 
 #ifdef _EVENT_HAVE_NETINET_IN_H
 #include <netinet/in.h>
@@ -311,7 +312,7 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 	/* 输出到客户端 */
 
 	//HTTP header
-	evhttp_add_header(req->output_headers, "Server", MYHTTPD_SIGNATURE);
+	evhttp_add_header(req->output_headers, "Server", "MYHTTPD_SIGNATURE");
 	evhttp_add_header(req->output_headers, "Content-Type", "text/plain; charset=UTF-8");
 	evhttp_add_header(req->output_headers, "Connection", "close");
 	//输出的内容
