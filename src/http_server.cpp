@@ -166,8 +166,10 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 	evhttp_parse_query(uritest, &args);
 	//然后通过evhttp_find_header等函数获取各个参数及对应的值
 	evhttp_find_header(&args, "q"); //得到test
+	char tmp[1024];
+	sprintf(tmp, "q=%s\n", evhttp_find_header(&args, "q"));
 	evhttp_find_header(&args, "s"); //得到some thing 
-
+	sprintf(tmp, "q=%s\n", evhttp_find_header(&args, "s"));
 	/* Decode the URI */
 	decoded = evhttp_uri_parse(uri);
 	if (!decoded) {
