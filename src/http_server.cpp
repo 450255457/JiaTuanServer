@@ -182,7 +182,7 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 		goto err;
 
 	len = strlen(decoded_path) + strlen(docroot) + 2;
-	if (!(whole_path = (char *)(malloc(len)))) {
+	if (!(whole_path = (char *)malloc(len))) {
 		perror("malloc");
 		goto err;
 	}
@@ -300,7 +300,7 @@ int	main(int argc, char **argv)
 
 	/* We want to accept arbitrary requests, so we need to set a "generic"
 	* cb.  We can also add callbacks for specific paths. */
-	evhttp_set_gencb(http, send_document_cb, NULL);		// 设置generic的请求处理函数
+	evhttp_set_gencb(http, send_document_cb, "/usr/share/nginx/html/JiaTuanWeb");		// 设置generic的请求处理函数
 
 	/* Now we tell the evhttp what port to listen on */
 	handle = evhttp_bind_socket_with_handle(http, "0.0.0.0", port);
