@@ -182,7 +182,7 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 		goto err;
 
 	len = strlen(decoded_path) + strlen(docroot) + 2;
-	if (!(whole_path = (char *)(malloc(len))) {
+	if (!(whole_path = (char *)(malloc(len)))) {
 		perror("malloc");
 		goto err;
 	}
