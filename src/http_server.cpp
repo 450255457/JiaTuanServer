@@ -160,8 +160,13 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 		return;
 	}
 	printf("Got a GET request for <%s>\n", uri);
-	struct evkeyvalq params;
-	evhttp_parse_query(uri, &params);
+
+	char *uritest = "http://foo.com/?q=test&s=some+thing";
+	struct evkeyvalq args;
+	evhttp_parse_query(uritest, &args);
+	//然后通过evhttp_find_header等函数获取各个参数及对应的值
+	evhttp_find_header(&args, "q"); //得到test
+	evhttp_find_header(&args, "s"); //得到some thing 
 
 	/* Decode the URI */
 	decoded = evhttp_uri_parse(uri);
