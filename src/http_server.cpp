@@ -143,183 +143,137 @@ static void dump_request_cb(struct evhttp_request *req, void *arg)
 static void send_document_cb(struct evhttp_request *req, void *arg)
 {
 	printf("Run send_document_cb.\n");
-	char output[2048] = "\0";
-	char tmp[1024];
+	
+	struct evbuffer *evb = NULL;
+	const char *docroot = "/usr/share/nginx/html/JiaTuanWeb";
+	const char *uri = evhttp_request_get_uri(req);
+	struct evhttp_uri *decoded = NULL;
+	const char *path;
+	char *decoded_path;
+	char *whole_path = NULL;
+	size_t len;
+	int fd = -1;
+	struct stat st;
 
-	//获取客户端请求的URI(使用evhttp_request_uri或直接req->uri)
-	const char *uri;
-	uri1 = evhttp_request_uri(req);
-	printf("uri = %s\n",uri1);
-	sprintf(tmp, "uri=%s\n", uri1);
-	strcat(output, tmp);
-
-	sprintf(tmp, "uri=%s\n", req->uri);
-	strcat(output, tmp);
-	char *decoded_uri;
-	decoded_uri = evhttp_decode_uri(uri1);
-	sprintf(tmp, "decoded_uri=%s\n", decoded_uri);
-	strcat(output, tmp);
-
-	//解析URI的参数(即GET方法的参数)
+	if (evhttp_request_get_command(req) != EVHTTP_REQ_GET) {
+		dump_request_cb(req, arg);
+		return;
+	}
+	printf("Got a GET request for <%s>\n", uri);
 	struct evkeyvalq params;
-	evhttp_parse_query(decoded_uri, &params);
-	sprintf(tmp, "q=%s\n", evhttp_find_header(&params, "q"));
-	strcat(output, tmp);
-	sprintf(tmp, "s=%s\n", evhttp_find_header(&params, "s"));
-	strcat(output, tmp);
-	free(decoded_uri);
+	evhttp_parse_query(uri, &params);
 
-	//获取POST方法的数据
-	//char *post_data = (char *)EVBUFFER_DATA(req->input_buffer);
-	//sprintf(tmp, "post_data=%s\n", post_data);
-	//strcat(output, tmp);
+	/* Decode the URI */
+	decoded = evhttp_uri_parse(uri);
+	if (!decoded) {
+		printf("It's not a good URI. Sending BADREQUEST\n");
+		evhttp_send_error(req, HTTP_BADREQUEST, 0);
+		return;
+	}
 
-	/*
-	具体的：可以根据GET/POST的参数执行相应操作，然后将结果输出
-	...
-	*/
+	/* Let's see what path the user asked for. */
+	path = evhttp_uri_get_path(decoded);
+	if (!path) path = "/";
 
-	/* 输出到客户端 */
+	/* We need to decode it, to see what path the user really wanted. */
+	decoded_path = evhttp_uridecode(path, 0, NULL);
+	if (decoded_path == NULL)
+		goto err;
+	/* Don't allow any ".."s in the path, to avoid exposing stuff outside
+	* of the docroot.  This test is both overzealous and underzealous:
+	* it forbids aceptable paths like "/this/one..here", but it doesn't
+	* do anything to prevent symlink following." */
+	if (strstr(decoded_path, ".."))
+		goto err;
 
-	//HTTP header
-	//evhttp_add_header(req->output_headers, "Server", "MYHTTPD_SIGNATURE");
-	//evhttp_add_header(req->output_headers, "Content-Type", "text/plain; charset=UTF-8");
-	//evhttp_add_header(req->output_headers, "Connection", "close");
-	//输出的内容
-	struct evbuffer *buf;
-	buf = evbuffer_new();
-	evbuffer_add_printf(buf, "It works!\n%s\n", output);
-	evhttp_send_reply(req, HTTP_OK, "OK", buf);
-	evbuffer_free(buf);
-//	struct evbuffer *evb = NULL;
-//	const char *docroot = "/usr/share/nginx/html/JiaTuanWeb";
-//	const char *uri = evhttp_request_get_uri(req);
-//	struct evhttp_uri *decoded = NULL;
-//	const char *path;
-//	char *decoded_path;
-//	char *whole_path = NULL;
-//	size_t len;
-//	int fd = -1;
-//	struct stat st;
-//
-//	if (evhttp_request_get_command(req) != EVHTTP_REQ_GET) {
-//		dump_request_cb(req, arg);
-//		return;
-//	}
-//
-//	printf("Got a GET request for <%s>\n", uri);
-//
-//	/* Decode the URI */
-//	decoded = evhttp_uri_parse(uri);
-//	if (!decoded) {
-//		printf("It's not a good URI. Sending BADREQUEST\n");
-//		evhttp_send_error(req, HTTP_BADREQUEST, 0);
-//		return;
-//	}
-//
-//	/* Let's see what path the user asked for. */
-//	path = evhttp_uri_get_path(decoded);
-//	if (!path) path = "/";
-//
-//	/* We need to decode it, to see what path the user really wanted. */
-//	decoded_path = evhttp_uridecode(path, 0, NULL);
-//	if (decoded_path == NULL)
-//		goto err;
-//	/* Don't allow any ".."s in the path, to avoid exposing stuff outside
-//	* of the docroot.  This test is both overzealous and underzealous:
-//	* it forbids aceptable paths like "/this/one..here", but it doesn't
-//	* do anything to prevent symlink following." */
-//	if (strstr(decoded_path, ".."))
-//		goto err;
-//
-//	len = strlen(decoded_path) + strlen(docroot) + 2;
-//	if (!(whole_path = (char *)malloc(len))) {
-//		perror("malloc");
-//		goto err;
-//	}
-//	evutil_snprintf(whole_path, len, "%s/%s", docroot, decoded_path);
-//
-//	if (stat(whole_path, &st)<0) {
-//		goto err;
-//	}
-//
-//	/* This holds the content we're sending. */
-//	evb = evbuffer_new();
-//
-//	if (S_ISDIR(st.st_mode)) {
-//		/* If it's a directory, read the comments and make a little
-//		* index page */
-//
-//		DIR *d;
-//		struct dirent *ent;
-//		const char *trailing_slash = "";
-//
-//		if (!strlen(path) || path[strlen(path) - 1] != '/')
-//			trailing_slash = "/";
-//
-//		if (!(d = opendir(whole_path)))
-//			goto err;
-//
-//		evbuffer_add_printf(evb, "<html>\n <head>\n"
-//			"  <title>%s</title>\n"
-//			"  <base href='%s%s%s'>\n"
-//			" </head>\n"
-//			" <body>\n"
-//			"  <h1>%s</h1>\n"
-//			"  <ul>\n",
-//			decoded_path, /* XXX html-escape this. */
-//			uri_root, path, /* XXX html-escape this? */
-//			trailing_slash,
-//			decoded_path /* XXX html-escape this */);
-//		while ((ent = readdir(d))) {
-//			const char *name = ent->d_name;
-//			evbuffer_add_printf(evb,
-//				"    <li><a href=\"%s\">%s</a>\n",
-//				name, name);/* XXX escape this */
-//
-//			evbuffer_add_printf(evb, "</ul></body></html>\n");
-//
-//			closedir(d);
-//
-//			evhttp_add_header(evhttp_request_get_output_headers(req),
-//				"Content-Type", "text/html");
-//		}
-//	}
-//	else {
-//		/* Otherwise it's a file; add it to the buffer to get
-//		* sent via sendfile */
-//		const char *type = guess_content_type(decoded_path);
-//		if ((fd = open(whole_path, O_RDONLY)) < 0) {
-//			perror("open");
-//			goto err;
-//		}
-//
-//		if (fstat(fd, &st)<0) {
-//			/* Make sure the length still matches, now that we
-//			* opened the file :/ */
-//			perror("fstat");
-//			goto err;
-//		}
-//		evhttp_add_header(evhttp_request_get_output_headers(req),
-//			"Content-Type", type);
-//		evbuffer_add_file(evb, fd, 0, st.st_size);
-//	}
-//
-//	evhttp_send_reply(req, 200, "OK", evb);
-//	goto done;
-//err:
-//	evhttp_send_error(req, 404, "Document was not found");
-//	if (fd >= 0)
-//		close(fd);
-//done:
-//	if (decoded)
-//		evhttp_uri_free(decoded);
-//	if (decoded_path)
-//		free(decoded_path);
-//	if (whole_path)
-//		free(whole_path);
-//	if (evb)
-//		evbuffer_free(evb);
+	len = strlen(decoded_path) + strlen(docroot) + 2;
+	if (!(whole_path = (char *)malloc(len))) {
+		perror("malloc");
+		goto err;
+	}
+	evutil_snprintf(whole_path, len, "%s/%s", docroot, decoded_path);
+
+	if (stat(whole_path, &st)<0) {
+		goto err;
+	}
+
+	/* This holds the content we're sending. */
+	evb = evbuffer_new();
+
+	if (S_ISDIR(st.st_mode)) {
+		/* If it's a directory, read the comments and make a little
+		* index page */
+
+		DIR *d;
+		struct dirent *ent;
+		const char *trailing_slash = "";
+
+		if (!strlen(path) || path[strlen(path) - 1] != '/')
+			trailing_slash = "/";
+
+		if (!(d = opendir(whole_path)))
+			goto err;
+
+		evbuffer_add_printf(evb, "<html>\n <head>\n"
+			"  <title>%s</title>\n"
+			"  <base href='%s%s%s'>\n"
+			" </head>\n"
+			" <body>\n"
+			"  <h1>%s</h1>\n"
+			"  <ul>\n",
+			decoded_path, /* XXX html-escape this. */
+			uri_root, path, /* XXX html-escape this? */
+			trailing_slash,
+			decoded_path /* XXX html-escape this */);
+		while ((ent = readdir(d))) {
+			const char *name = ent->d_name;
+			evbuffer_add_printf(evb,
+				"    <li><a href=\"%s\">%s</a>\n",
+				name, name);/* XXX escape this */
+
+			evbuffer_add_printf(evb, "</ul></body></html>\n");
+
+			closedir(d);
+
+			evhttp_add_header(evhttp_request_get_output_headers(req),
+				"Content-Type", "text/html");
+		}
+	}
+	else {
+		/* Otherwise it's a file; add it to the buffer to get
+		* sent via sendfile */
+		const char *type = guess_content_type(decoded_path);
+		if ((fd = open(whole_path, O_RDONLY)) < 0) {
+			perror("open");
+			goto err;
+		}
+
+		if (fstat(fd, &st)<0) {
+			/* Make sure the length still matches, now that we
+			* opened the file :/ */
+			perror("fstat");
+			goto err;
+		}
+		evhttp_add_header(evhttp_request_get_output_headers(req),
+			"Content-Type", type);
+		evbuffer_add_file(evb, fd, 0, st.st_size);
+	}
+
+	evhttp_send_reply(req, 200, "OK", evb);
+	goto done;
+err:
+	evhttp_send_error(req, 404, "Document was not found");
+	if (fd >= 0)
+		close(fd);
+done:
+	if (decoded)
+		evhttp_uri_free(decoded);
+	if (decoded_path)
+		free(decoded_path);
+	if (whole_path)
+		free(whole_path);
+	if (evb)
+		evbuffer_free(evb);
 
 }
 
