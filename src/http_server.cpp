@@ -148,14 +148,15 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 
 	//获取客户端请求的URI(使用evhttp_request_uri或直接req->uri)
 	const char *uri;
-	uri = evhttp_request_uri(req);
-	sprintf(tmp, "uri=%s\n", uri);
+	uri1 = evhttp_request_uri(req);
+	printf("uri = %s\n",uri1);
+	sprintf(tmp, "uri=%s\n", uri1);
 	strcat(output, tmp);
 
-//	sprintf(tmp, "uri=%s\n", req->uri);
-//	strcat(output, tmp);
+	sprintf(tmp, "uri=%s\n", req->uri);
+	strcat(output, tmp);
 	char *decoded_uri;
-	decoded_uri = evhttp_decode_uri(uri);
+	decoded_uri = evhttp_decode_uri(uri1);
 	sprintf(tmp, "decoded_uri=%s\n", decoded_uri);
 	strcat(output, tmp);
 
