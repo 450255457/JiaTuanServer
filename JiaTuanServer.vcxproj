@@ -136,6 +136,12 @@
     <ClCompile Include="libevent\win32select.c" />
     <ClCompile Include="src\data_base.cpp" />
     <ClCompile Include="src\http_parser.c" />
+    <ClCompile Include="src\jsoncpp\src\jsontestrunner\main.cpp" />
+    <ClCompile Include="src\jsoncpp\src\lib_json\json_reader.cpp" />
+    <ClCompile Include="src\jsoncpp\src\lib_json\json_value.cpp" />
+    <ClCompile Include="src\jsoncpp\src\lib_json\json_writer.cpp" />
+    <ClCompile Include="src\jsoncpp\src\test_lib_json\jsontest.cpp" />
+    <ClCompile Include="src\jsoncpp\src\test_lib_json\main.cpp" />
     <ClCompile Include="src\libevent\arc4random.c" />
     <ClCompile Include="src\libevent\buffer.c" />
     <ClCompile Include="src\libevent\bufferevent.c" />
@@ -208,7 +214,9 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\public_function.cpp" />
     <ClCompile Include="src\http_server.cpp" />
+    <ClCompile Include="src\server.c" />
     <ClCompile Include="src\thread_pool.cpp" />
+    <ClCompile Include="src\workqueue.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libevent\bufferevent-internal.h" />
@@ -270,6 +278,16 @@
     <ClInclude Include="libevent\WIN32-Code\tree.h" />
     <ClInclude Include="src\data_base.h" />
     <ClInclude Include="src\http_parser.h" />
+    <ClInclude Include="src\jsoncpp\include\json\autolink.h" />
+    <ClInclude Include="src\jsoncpp\include\json\config.h" />
+    <ClInclude Include="src\jsoncpp\include\json\features.h" />
+    <ClInclude Include="src\jsoncpp\include\json\forwards.h" />
+    <ClInclude Include="src\jsoncpp\include\json\json.h" />
+    <ClInclude Include="src\jsoncpp\include\json\reader.h" />
+    <ClInclude Include="src\jsoncpp\include\json\value.h" />
+    <ClInclude Include="src\jsoncpp\include\json\writer.h" />
+    <ClInclude Include="src\jsoncpp\src\lib_json\json_batchallocator.h" />
+    <ClInclude Include="src\jsoncpp\src\test_lib_json\jsontest.h" />
     <ClInclude Include="src\libevent\bufferevent-internal.h" />
     <ClInclude Include="src\libevent\changelist-internal.h" />
     <ClInclude Include="src\libevent\compat\sys\queue.h" />
@@ -332,6 +350,14 @@
     <ClInclude Include="src\http_server.h" />
     <ClInclude Include="src\thread_pool.h" />
     <ClInclude Include="src\thread_pool9.h" />
+    <ClInclude Include="src\workqueue.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\jsoncpp\doc\footer.html" />
+    <None Include="src\jsoncpp\doc\header.html" />
+    <None Include="src\jsoncpp\src\lib_json\json_internalarray.inl" />
+    <None Include="src\jsoncpp\src\lib_json\json_internalmap.inl" />
+    <None Include="src\jsoncpp\src\lib_json\json_valueiterator.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
