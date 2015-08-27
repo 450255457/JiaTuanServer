@@ -93,6 +93,7 @@ not_found:
 * dumps all information to stdout and gives back a trivial 200 ok */
 static void dump_request_cb(struct evhttp_request *req, void *arg)
 {
+	printf("Run dump_request_cb.\n");
 	const char *cmdtype;
 	struct evkeyvalq *headers;
 	struct evkeyval *header;
@@ -140,6 +141,7 @@ static void dump_request_cb(struct evhttp_request *req, void *arg)
 */
 static void send_document_cb(struct evhttp_request *req, void *arg)
 {
+	printf("Run send_document_cb.\n");
 	struct evbuffer *evb = NULL;
 	const char *docroot = "/usr/share/nginx/html/JiaTuanWeb";
 	const char *uri = evhttp_request_get_uri(req);
@@ -300,7 +302,7 @@ int	main(int argc, char **argv)
 
 	/* We want to accept arbitrary requests, so we need to set a "generic"
 	* cb.  We can also add callbacks for specific paths. */
-//	evhttp_set_gencb(http, send_document_cb, NULL);		// 设置generic的请求处理函数
+	evhttp_set_gencb(http, send_document_cb, NULL);		// 设置generic的请求处理函数
 
 	/* Now we tell the evhttp what port to listen on */
 	handle = evhttp_bind_socket_with_handle(http, "0.0.0.0", port);
