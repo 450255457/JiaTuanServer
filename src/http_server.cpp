@@ -141,7 +141,7 @@ static void dump_request_cb(struct evhttp_request *req, void *arg)
 static void send_document_cb(struct evhttp_request *req, void *arg)
 {
 	struct evbuffer *evb = NULL;
-	const char *docroot = arg;
+	const char *docroot = (const char*)arg;
 	const char *uri = evhttp_request_get_uri(req);
 	struct evhttp_uri *decoded = NULL;
 	const char *path;
@@ -182,7 +182,7 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 		goto err;
 
 	len = strlen(decoded_path) + strlen(docroot) + 2;
-	if (!(whole_path = malloc(len))) {
+	if (!(whole_path = static_cast<char*>(malloc(len)))) {
 		perror("malloc");
 		goto err;
 	}
@@ -226,12 +226,13 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 				"    <li><a href=\"%s\">%s</a>\n",
 				name, name);/* XXX escape this */
 
-		evbuffer_add_printf(evb, "</ul></body></html>\n");
+			evbuffer_add_printf(evb, "</ul></body></html>\n");
 
-		closedir(d);
+			closedir(d);
 
-		evhttp_add_header(evhttp_request_get_output_headers(req),
-			"Content-Type", "text/html");
+			evhttp_add_header(evhttp_request_get_output_headers(req),
+				"Content-Type", "text/html");
+		}
 	}
 	else {
 		/* Otherwise it's a file; add it to the buffer to get
