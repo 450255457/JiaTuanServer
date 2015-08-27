@@ -25,8 +25,8 @@
 int main()
 {
 
-	//char szWeb[] = "www.baidu.com";
-	char szWeb[] = "127.0.0.1";
+	char szWeb[] = "www.baidu.com";
+	//char szWeb[] = "127.0.0.1";
 	hostent *pHost = gethostbyname(szWeb);
 
 	// 度娘的ip地址
