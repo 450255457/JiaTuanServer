@@ -296,11 +296,11 @@ int	main(int argc, char **argv)
 	}
 
 	/* The /dump URI will dump all requests to stdout and say 200 ok. */
-//	evhttp_set_cb(http, "/dump", dump_request_cb, NULL);	//设置特定的URI的callback
+	evhttp_set_cb(http, "/dump", dump_request_cb, NULL);	//设置特定的URI的callback
 
 	/* We want to accept arbitrary requests, so we need to set a "generic"
 	* cb.  We can also add callbacks for specific paths. */
-	evhttp_set_gencb(http, send_document_cb, NULL);		// 设置generic的请求处理函数
+//	evhttp_set_gencb(http, send_document_cb, NULL);		// 设置generic的请求处理函数
 
 	/* Now we tell the evhttp what port to listen on */
 	handle = evhttp_bind_socket_with_handle(http, "0.0.0.0", port);
