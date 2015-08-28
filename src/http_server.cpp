@@ -181,13 +181,13 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 	//sprintf(tmp, "s=%s\n", evhttp_find_header(&args, "s"));
 	//printf("tmp = %s\n", tmp);
 	std::string out;
-	size_t post_size = EVBUFFER_LENGTH(req->input_buffer);
+	size_t post_size = EVBUFFER_LENGTH(evhttp_request_get_input_buffer(req);
 
 	printf("len = %d\n", post_size);
 	if (post_size > 0)
 	{
 		size_t copy_len = post_size > BUF_MAX ? BUF_MAX : post_size;
-		memcpy(_buf, EVBUFFER_DATA(req->input_buffer), copy_len);
+		memcpy(_buf, EVBUFFER_DATA(evhttp_request_get_input_buffer(req), copy_len);
 		out.assign(_buf, copy_len);
 	}
 	/*char *post_data = (char *)EVBUFFER_DATA(evhttp_request_get_input_buffer(req));
