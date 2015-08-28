@@ -180,7 +180,8 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 	//evhttp_find_header(&args, "s"); //得到some thing 
 	//sprintf(tmp, "s=%s\n", evhttp_find_header(&args, "s"));
 	//printf("tmp = %s\n", tmp);
-	string out = "";
+
+	/*string out = "";
 	size_t post_size = EVBUFFER_LENGTH(evhttp_request_get_input_buffer(req));
 
 	printf("len = %d\n", post_size);
@@ -189,11 +190,11 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 		size_t copy_len = post_size > BUF_MAX ? BUF_MAX : post_size;
 		memcpy(_buf, EVBUFFER_DATA(evhttp_request_get_input_buffer(req)), copy_len);
 		out.assign(_buf, copy_len);
-	}
-	/*char *post_data = (char *)EVBUFFER_DATA(evhttp_request_get_input_buffer(req));
+	}*/
+	char *post_data = (char *)EVBUFFER_DATA(evhttp_request_get_input_buffer(req));
 	sprintf(tmp, "post_data=%s\n", post_data);
 	strcat(output, tmp);
-	printf("tmp = %s\n", tmp);*/
+	printf("tmp = %s\n", tmp);
 
 	/* Decode the URI */
 	decoded = evhttp_uri_parse(uri);
