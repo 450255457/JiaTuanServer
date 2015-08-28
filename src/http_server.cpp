@@ -1,17 +1,9 @@
 ﻿/*****************************************
 > File Name: http_server.cpp
-> Description:http_server端
+> Description:A  http webserver using Libevent's evhttp.
 > Author: linden
 > Date: 2015-08-25
 *******************************************/
-
-/*
-A trivial static http webserver using Libevent's evhttp.
-
-This is not the best code in the world, and it does some fairly stupid stuff
-that you would never want to do in a production webserver. Caveat hackor!
-
-*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -151,7 +143,7 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 	char output[2048] = "\0";
 	struct evbuffer *evb = NULL;
 	const char *docroot = "/usr/share/nginx/html/JiaTuanWeb";
-	const char *uri = /*evhttp_request_get_uri(req)*/req->uri;
+	const char *uri = req->uri;
 	struct evhttp_uri *decoded = NULL;
 	const char *path;
 	char *decoded_path;
@@ -193,7 +185,7 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 		memcpy(_buf, EVBUFFER_DATA(evhttp_request_get_input_buffer(req)), copy_len);
 		out.assign(_buf, copy_len);
 	}*/
-	char *post_data = (char *)EVBUFFER_DATA(evhttp_request_get_input_buffer(req));
+	char *post_data = (char *)EVBUFFER_DATA(req->input_buffer);
 	sprintf(tmp, "post_data=%s\n", post_data);
 	strcat(output, tmp);
 	printf("tmp = %s\n", tmp);
