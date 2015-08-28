@@ -32,7 +32,7 @@ that you would never want to do in a production webserver. Caveat hackor!
 #include "http_parser.h"
 
 #include <event2/event.h>
-#include <event2/evhttp.h>
+#include <event2/http.h>
 #include <event2/buffer.h>
 #include <event2/util.h>
 #include <event2/keyvalq_struct.h>
@@ -181,7 +181,7 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 	//sprintf(tmp, "s=%s\n", evhttp_find_header(&args, "s"));
 	//printf("tmp = %s\n", tmp);
 	string out = "";
-	size_t post_size = EVBUFFER_LENGTH(evhttp_request_get_input_buffer(req);
+	size_t post_size = evbuffer_get_length(evhttp_request_get_input_buffer(req);
 
 	printf("len = %d\n", post_size);
 	if (post_size > 0)
