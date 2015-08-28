@@ -161,7 +161,7 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 	decoded_uri = evhttp_decode_uri(uri);
 	sprintf(tmp, "decoded_uri=%s\n", decoded_uri);
 	strcat(output, tmp);
-	if (evhttp_request_get_command(req) != EVHTTP_REQ_GET) {
+	if (evhttp_request_get_command(req) != EVHTTP_REQ_POST) {
 		dump_request_cb(req, arg);
 		return;
 	}
