@@ -54,7 +54,7 @@ that you would never want to do in a production webserver. Caveat hackor!
 using namespace std;
 
 char uri_root[512];
-static char _buf[BUF_MAX];
+static char _buf[BUF_MAX] = {0};
 static const struct table_entry {
 	const char *extension;
 	const char *content_type;
