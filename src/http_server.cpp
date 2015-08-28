@@ -49,10 +49,12 @@ that you would never want to do in a production webserver. Caveat hackor!
 /* Compatibility for possible missing IPv6 declarations */
 #include "libevent/util-internal.h"
 
+#define BUF_MAX 1024*16
+
 using namespace std;
 
 char uri_root[512];
-
+static char _buf[BUF_MAX];
 static const struct table_entry {
 	const char *extension;
 	const char *content_type;
@@ -178,11 +180,20 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 	//evhttp_find_header(&args, "s"); //得到some thing 
 	//sprintf(tmp, "s=%s\n", evhttp_find_header(&args, "s"));
 	//printf("tmp = %s\n", tmp);
+	std::string out;
+	size_t post_size = EVBUFFER_LENGTH(req->input_buffer);
 
-	char *post_data = (char *)EVBUFFER_DATA(evhttp_request_get_input_buffer(req));
+	printf("len = %d\n", post_size);
+	if (post_size > 0)
+	{
+		size_t copy_len = post_size > BUF_MAX ? BUF_MAX : post_size;
+		memcpy(_buf, EVBUFFER_DATA(req->input_buffer), copy_len);
+		out.assign(_buf, copy_len);
+	}
+	/*char *post_data = (char *)EVBUFFER_DATA(evhttp_request_get_input_buffer(req));
 	sprintf(tmp, "post_data=%s\n", post_data);
 	strcat(output, tmp);
-	printf("tmp = %s\n", tmp);
+	printf("tmp = %s\n", tmp);*/
 
 	/* Decode the URI */
 	decoded = evhttp_uri_parse(uri);
