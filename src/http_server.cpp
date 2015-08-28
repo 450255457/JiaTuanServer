@@ -31,6 +31,8 @@ that you would never want to do in a production webserver. Caveat hackor!
 #include <json/json.h>
 #include "http_parser.h"
 
+#include <event.h>
+#include <evhttp.h>
 #include <event2/event.h>
 #include <event2/http.h>
 #include <event2/buffer.h>
