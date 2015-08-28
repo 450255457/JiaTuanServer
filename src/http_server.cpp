@@ -149,7 +149,7 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 	char output[2048] = "\0";
 	struct evbuffer *evb = NULL;
 	const char *docroot = "/usr/share/nginx/html/JiaTuanWeb";
-	const char *uri = evhttp_request_get_uri(req);
+	const char *uri = /*evhttp_request_get_uri(req)*/req->uri;
 	struct evhttp_uri *decoded = NULL;
 	const char *path;
 	char *decoded_path;
