@@ -167,16 +167,21 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 	}
 	printf("Got a GET request for <%s>\n", uri);
 
-	char *uritest = "http://foo.com/?q=test&s=some+thing";
-	struct evkeyvalq args;
-	evhttp_parse_query(uritest, &args);
-	//然后通过evhttp_find_header等函数获取各个参数及对应的值
-	evhttp_find_header(&args, "q"); //得到test
-	
-	sprintf(tmp, "q=%s\n", evhttp_find_header(&args, "q"));
-	printf("tmp = %s\n",tmp);
-	evhttp_find_header(&args, "s"); //得到some thing 
-	sprintf(tmp, "s=%s\n", evhttp_find_header(&args, "s"));
+	//char *uritest = "http://foo.com/?q=test&s=some+thing";
+	//struct evkeyvalq args;
+	//evhttp_parse_query(uritest, &args);
+	////然后通过evhttp_find_header等函数获取各个参数及对应的值
+	//evhttp_find_header(&args, "q"); //得到test
+	//
+	//sprintf(tmp, "q=%s\n", evhttp_find_header(&args, "q"));
+	//printf("tmp = %s\n",tmp);
+	//evhttp_find_header(&args, "s"); //得到some thing 
+	//sprintf(tmp, "s=%s\n", evhttp_find_header(&args, "s"));
+	//printf("tmp = %s\n", tmp);
+
+	char *post_data = (char *)EVBUFFER_DATA(evhttp_request_get_input_buffer(req));
+	sprintf(tmp, "post_data=%s\n", post_data);
+	strcat(output, tmp);
 	printf("tmp = %s\n", tmp);
 
 	/* Decode the URI */

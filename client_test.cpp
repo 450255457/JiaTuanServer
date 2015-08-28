@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 	while (1)
 	{
 		sprintf(message, "GET /index.php HTTP/1.1\r\nHost: www.qujiatuan.com\r\n\r\n{\"id\":1,\"name\":\"kurama\"}");
-		printf("Send message : %s",message);
+		printf("Send message : %s\n",message);
 
 		//Send some data
 		if (send(sock, message, strlen(message), 0) < 0)
