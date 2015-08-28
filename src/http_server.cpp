@@ -31,14 +31,13 @@ that you would never want to do in a production webserver. Caveat hackor!
 #include <json/json.h>
 #include "http_parser.h"
 
-#include <event2/buffer_compat.h>
 #include <event2/event.h>
-#include <event2/http.h>
+#include <event2/evhttp.h>
 #include <event2/buffer.h>
 #include <event2/util.h>
 #include <event2/keyvalq_struct.h>
 #include <event2/http_compat.h>
-
+#include <event2/buffer_compat.h>
 
 #ifdef _EVENT_HAVE_NETINET_IN_H
 #include <netinet/in.h>
