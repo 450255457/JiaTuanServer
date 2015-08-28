@@ -31,13 +31,14 @@ that you would never want to do in a production webserver. Caveat hackor!
 #include <json/json.h>
 #include "http_parser.h"
 
+#include <event2/buffer_compat.h>
 #include <event2/event.h>
 #include <event2/http.h>
 #include <event2/buffer.h>
 #include <event2/util.h>
 #include <event2/keyvalq_struct.h>
 #include <event2/http_compat.h>
-#include <event2/buffer_compat.h>
+
 
 #ifdef _EVENT_HAVE_NETINET_IN_H
 #include <netinet/in.h>
@@ -180,7 +181,7 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 	//evhttp_find_header(&args, "s"); //得到some thing 
 	//sprintf(tmp, "s=%s\n", evhttp_find_header(&args, "s"));
 	//printf("tmp = %s\n", tmp);
-	std::string out;
+	string out = "";
 	size_t post_size = EVBUFFER_LENGTH(evhttp_request_get_input_buffer(req);
 
 	printf("len = %d\n", post_size);
