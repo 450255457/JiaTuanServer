@@ -272,11 +272,15 @@ int runServer(void) {
 	/* Set signal handlers */
 	sigset_t sigset;
 	sigemptyset(&sigset);
-	struct sigaction siginfo = {
+	/*struct sigaction siginfo = {
 		.sa_handler = sighandler,
 		.sa_mask = sigset,
 		.sa_flags = SA_RESTART,
-	};
+	};*/
+	struct sigaction siginfo; 
+	siginfo.sa_handler = sighandler;
+	siginfo.sa_mask = sigset;
+	siginfo.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &siginfo, NULL);
 	sigaction(SIGTERM, &siginfo, NULL);
 
