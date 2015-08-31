@@ -186,7 +186,7 @@ void on_accept(int fd, short ev, void *arg) {
 	}
 
 	/* Create a client object. */
-	if ((client = malloc(sizeof(*client))) == NULL) {
+	if ((client = (client_t *)malloc(sizeof(*client))) == NULL) {
 		warn("failed to allocate memory for client state");
 		close(client_fd);
 		return;
@@ -246,7 +246,7 @@ void on_accept(int fd, short ev, void *arg) {
 	bufferevent_enable(client->buf_ev, EV_READ);
 
 	/* Create a job object and add it to the work queue. */
-	if ((job = malloc(sizeof(*job))) == NULL) {
+	if ((job = (job_t *)malloc(sizeof(*job))) == NULL) {
 		warn("failed to allocate memory for job state");
 		closeAndFreeClient(client);
 		return;
