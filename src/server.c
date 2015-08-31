@@ -1,117 +1,120 @@
-#include <unistd.h>
-#include <netinet/in.h>    // for sockaddr_in
-#include <sys/types.h>    // for socket
-#include <sys/socket.h>    // for socket
-#include <stdio.h>        // for printf
-#include <stdlib.h>        // for exit
-#include <string.h>        // for bzero
-/*
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-*/
-#define HELLO_WORLD_SERVER_PORT    8090 
-#define LENGTH_OF_LISTEN_QUEUE 20
-#define BUFFER_SIZE 1024
-#define FILE_NAME_MAX_SIZE 512
+/*****************************************
+> File Name : server.c
+> Description : server端
+> Author : linden
+> Date : 2015-08-31
+*******************************************/
+
+#include <string.h>
+#include <errno.h>
+#include <stdio.h>
+#include <signal.h>
+#include <sys/socket.h>
+
+#include <event2/bufferevent.h>
+#include <event2/buffer.h>
+#include <event2/listener.h>
+#include <event2/util.h>
+#include <event2/event.h>
+
+static const char MESSAGE[] = "Hello, World!\n";
+
+static const int PORT = 8090;
+
+static void listener_cb(struct evconnlistener *, evutil_socket_t,struct sockaddr *, int socklen, void *);
+static void conn_writecb(struct bufferevent *, void *);
+static void conn_eventcb(struct bufferevent *, short, void *);
+static void signal_cb(evutil_socket_t, short, void *);
 
 int main(int argc, char **argv)
 {
-	//设置一个socket地址结构server_addr,代表服务器internet地址, 端口
-	struct sockaddr_in server_addr;
-	bzero(&server_addr, sizeof(server_addr)); //把一段内存区的内容全部设置为0
-	server_addr.sin_family = AF_INET;
-	server_addr.sin_addr.s_addr = htons(INADDR_ANY);
-	server_addr.sin_port = htons(HELLO_WORLD_SERVER_PORT);
+	struct event_base *base;
+	struct evconnlistener *listener;
+	struct event *signal_event;
 
-	//创建用于internet的流协议(TCP)socket,用server_socket代表服务器socket
-	int server_socket = socket(PF_INET, SOCK_STREAM, 0);
-	if (server_socket < 0)
-	{
-		printf("Create Socket Failed!");
-		exit(1);
-	}
-	{
-		int opt = 1;
-		setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+	struct sockaddr_in sin;
+
+	base = event_base_new();
+	if (!base) {
+		fprintf(stderr, "Could not initialize libevent!\n");
+		return 1;
 	}
 
-	//把socket和socket地址结构联系起来
-	if (bind(server_socket, (struct sockaddr*)&server_addr, sizeof(server_addr)))
-	{
-		printf("Server Bind Port : %d Failed!", HELLO_WORLD_SERVER_PORT);
-		exit(1);
+	memset(&sin, 0, sizeof(sin));
+	sin.sin_family = AF_INET;
+	sin.sin_port = htons(PORT);
+
+	listener = evconnlistener_new_bind(base, listener_cb, (void *)base,LEV_OPT_REUSEABLE | LEV_OPT_CLOSE_ON_FREE, -1,(struct sockaddr*)&sin,sizeof(sin));
+
+	if (!listener) {
+		fprintf(stderr, "Could not create a listener!\n");
+		return 1;
 	}
 
-	//server_socket用于监听
-	if (listen(server_socket, LENGTH_OF_LISTEN_QUEUE))
-	{
-		printf("Server Listen Failed!");
-		exit(1);
-	}
-	while (1) //服务器端要一直运行
-	{
-		//定义客户端的socket地址结构client_addr
-		struct sockaddr_in client_addr;
-		socklen_t length = sizeof(client_addr);
+	signal_event = evsignal_new(base, SIGINT, signal_cb, (void *)base);
 
-		//接受一个到server_socket代表的socket的一个连接
-		//如果没有连接请求,就等待到有连接请求--这是accept函数的特性
-		//accept函数返回一个新的socket,这个socket(new_server_socket)用于同连接到的客户的通信
-		//new_server_socket代表了服务器和客户端之间的一个通信通道
-		//accept函数把连接到的客户端信息填写到客户端的socket地址结构client_addr中
-		int new_server_socket = accept(server_socket, (struct sockaddr*)&client_addr, &length);
-		if (new_server_socket < 0)
-		{
-			printf("Server Accept Failed!\n");
-			break;
-		}
-		printf("Server accpet %d\n",new_server_socket);
-		char buffer[BUFFER_SIZE];
-		bzero(buffer, BUFFER_SIZE);
-		length = recv(new_server_socket, buffer, BUFFER_SIZE, 0);
-		if (length < 0)
-		{
-			printf("Server Recieve Data Failed!\n");
-			break;
-		}
-		printf("buffer = %s\n", buffer);
-		char file_name[FILE_NAME_MAX_SIZE + 1];
-		bzero(file_name, FILE_NAME_MAX_SIZE + 1);
-		strncpy(file_name, buffer, strlen(buffer)>FILE_NAME_MAX_SIZE ? FILE_NAME_MAX_SIZE : strlen(buffer));
-		//        int fp = open(file_name, O_RDONLY);
-		//        if( fp < 0 )
-		printf("%s\n", file_name);
-		FILE * fp = fopen(file_name, "r");
-		if (NULL == fp)
-		{
-			printf("File:\t%s Not Found\n", file_name);
-		}
-		else
-		{
-			bzero(buffer, BUFFER_SIZE);
-			int file_block_length = 0;
-			//            while( (file_block_length = read(fp,buffer,BUFFER_SIZE))>0)
-			while ((file_block_length = fread(buffer, sizeof(char), BUFFER_SIZE, fp)) > 0)
-			{
-				printf("file_block_length = %d\n", file_block_length);
-				//发送buffer中的字符串到new_server_socket,实际是给客户端
-				if (send(new_server_socket, buffer, file_block_length, 0) < 0)
-				{
-					printf("Send File:\t%s Failed\n", file_name);
-					break;
-				}
-				bzero(buffer, BUFFER_SIZE);
-			}
-			//            close(fp);
-			fclose(fp);
-			printf("File:\t%s Transfer Finished\n", file_name);
-		}
-		//关闭与客户端的连接
-		close(new_server_socket);
+	if (!signal_event || event_add(signal_event, NULL)<0) {
+		fprintf(stderr, "Could not create/add a signal event!\n");
+		return 1;
 	}
-	//关闭监听用的socket
-	close(server_socket);
+
+	event_base_dispatch(base);
+
+	evconnlistener_free(listener);
+	event_free(signal_event);
+	event_base_free(base);
+
+	printf("done\n");
 	return 0;
+}
+
+static void listener_cb(struct evconnlistener *listener, evutil_socket_t fd, struct sockaddr *sa, int socklen, void *user_data)
+{
+	struct event_base *base = user_data;
+	struct bufferevent *bev;
+
+	bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
+	if (!bev) {
+		fprintf(stderr, "Error constructing bufferevent!");
+		event_base_loopbreak(base);
+		return;
+	}
+	bufferevent_setcb(bev, NULL, conn_writecb, conn_eventcb, NULL);
+	bufferevent_enable(bev, EV_WRITE);
+	bufferevent_disable(bev, EV_READ);
+
+	bufferevent_write(bev, MESSAGE, strlen(MESSAGE));
+}
+
+static void conn_writecb(struct bufferevent *bev, void *user_data)
+{
+	struct evbuffer *output = bufferevent_get_output(bev);
+	if (evbuffer_get_length(output) == 0) {
+		printf("flushed answer\n");
+		bufferevent_free(bev);
+	}
+}
+
+static void conn_eventcb(struct bufferevent *bev, short events, void *user_data)
+{
+	if (events & BEV_EVENT_EOF) {
+		printf("Connection closed.\n");
+	}
+	else if (events & BEV_EVENT_ERROR) {
+		printf("Got an error on the connection: %s\n",
+			strerror(errno));/*XXX win32*/
+	}
+	/* None of the other events can happen here, since we haven't enabled
+	* timeouts */
+	bufferevent_free(bev);
+}
+
+static void signal_cb(evutil_socket_t sig, short events, void *user_data)
+{
+	struct event_base *base = user_data;
+	struct timeval delay = { 2, 0 };
+
+	printf("Caught an interrupt signal; exiting cleanly in two seconds.\n");
+
+	event_base_loopexit(base, &delay);
 }

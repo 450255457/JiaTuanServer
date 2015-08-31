@@ -1,19 +1,22 @@
 /*****************************************
-> File Name : http_server.h
-> Description : http_server head file
+> File Name : server_threaded.h
+> Description : server_threaded head file
 > Author : linden
-> Date : 2015-08-07
+> Date : 2015-08-31
 *******************************************/
 
-#ifndef _HTTP_SERVER_H
-#define _HTTP_SERVER_H
+#ifndef _SERVER_THREADED_H
+#define _SERVER_THREADED_H
 
-#define IPADDRESS	"0.0.0.0"
-#define PORT		8090
-#define LISTENQ		5
-#define FDSIZE		1000
-#define EPOLLEVENTS	1000
-#define BACKLOG 5		//最大连接数
+/* Port to listen on. */
+#define SERVER_PORT 8090
+/* Connection backlog (# of backlogged connections to accept). */
+#define CONNECTION_BACKLOG 8
+/* Socket read and write timeouts, in seconds. */
+#define SOCKET_READ_TIMEOUT_SECONDS 10
+#define SOCKET_WRITE_TIMEOUT_SECONDS 10
+/* Number of worker threads.  Should match number of CPU cores reported in /proc/cpuinfo. */
+#define NUM_THREADS 8
 
 class CHttpServer
 {  

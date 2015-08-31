@@ -22,6 +22,7 @@
 #include <event.h>
 #include <signal.h>
 
+#include "server_threaded.h"
 #include "workqueue.h"
 
 /* Port to listen on. */
