@@ -10,9 +10,13 @@
 #include <string.h>		//strlen
 #include <sys/socket.h>	//socket
 #include <arpa/inet.h>	//inet_addr
+#include <iostream>
+#include <json/json.h>
 
 #define PORT		8090
 #define IPADDRESS	"127.0.0.1"
+
+using namespace std;
 
 int main(int argc, char *argv[])
 {
@@ -42,9 +46,32 @@ int main(int argc, char *argv[])
 	puts("Connected\n");
 
 	//keep communicating with server
-	
+//	while (1)
+//	{
 		//sprintf(message, "POST / HTTP/1.1\r\nHost: www.qujiatuan.com\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: 12\r\nConnection:close\r\n\r\nsn=123&n=asa");
-		sprintf(message, "sn=123&n=asa");
+	//sprintf(message, "sn=123&n=asa");Json::Value root;
+
+	Json::Value root;
+	Json::Value arrayObj;
+	Json::Value item;
+
+	item["FunctionName"] = "1";
+	item["CountryCode"] = "2";
+	item["PhoneNO"] = "3";
+	item["Pwd"] = "4";
+	arrayObj.append(item);
+
+	root["name"] = "json";
+	root["array"] = arrayObj;
+
+	// 转换为字符串（带格式）
+	//root.toStyledString();
+	//std::string out = root.toStyledString();
+	// 输出无格式json字符串
+	Json::FastWriter writer;
+	std::string out = writer.write(root);
+	std::cout << out << std::endl;
+
 		printf("Send message : %s\n",message);
 
 		//Send some data
@@ -53,8 +80,7 @@ int main(int argc, char *argv[])
 			puts("Send failed");
 			return -1;
 		}
-		while (1)
-		{
+
 		//Receive a reply from the server
 		if (recv(sockfd, server_reply, 2000, 0) < 0)
 		{
@@ -64,7 +90,7 @@ int main(int argc, char *argv[])
 
 		puts("Server reply :");
 		puts(server_reply);
-	}
+//	}
 
 	close(sockfd);
 	return 0;
