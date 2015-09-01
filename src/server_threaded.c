@@ -127,9 +127,8 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 		evbuffer_remove(bev->input, data, nbytes);
 		/* Add the chunk of data from our local array (data) to the client's output buffer. */
 		//evbuffer_add(client->output_buffer, data, nbytes);
-		evbuffer_add(client->output_buffer, "test", 5);
 	}
-
+	evbuffer_add(client->output_buffer, "test", 5);
 	/* Send the results to the client.  This actually only queues the results for sending.
 	* Sending will occur asynchronously, handled by libevent. */
 	if (bufferevent_write_buffer(bev, client->output_buffer)) {
