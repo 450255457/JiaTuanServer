@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 		if (recv(sockfd, server_reply, 2000, 0) < 0)
 		{
 			puts("recv failed");
-			break;
+		//	break;
 		}
 
 		puts("Server reply :");
