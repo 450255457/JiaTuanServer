@@ -126,7 +126,8 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 		if (nbytes > 4096) nbytes = 4096;
 		evbuffer_remove(bev->input, data, nbytes);
 		/* Add the chunk of data from our local array (data) to the client's output buffer. */
-		evbuffer_add(client->output_buffer, data, nbytes);
+		//evbuffer_add(client->output_buffer, data, nbytes);
+		evbuffer_add(client->output_buffer, "test", 4);
 	}
 
 	/* Send the results to the client.  This actually only queues the results for sending.
@@ -328,7 +329,7 @@ int runServer(void) {
 	event_base_set(evbase_accept, &ev_accept);
 	event_add(&ev_accept, NULL);
 
-	printf("Server running.\n");
+	printf("Server is running...\n");
 
 	/* Start the event loop. */
 	event_base_dispatch(evbase_accept);
