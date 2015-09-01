@@ -42,8 +42,7 @@ int main(int argc, char *argv[])
 	puts("Connected\n");
 
 	//keep communicating with server
-	while (1)
-	{
+	
 		//sprintf(message, "POST / HTTP/1.1\r\nHost: www.qujiatuan.com\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: 12\r\nConnection:close\r\n\r\nsn=123&n=asa");
 		sprintf(message, "sn=123&n=asa");
 		printf("Send message : %s\n",message);
@@ -54,7 +53,8 @@ int main(int argc, char *argv[])
 			puts("Send failed");
 			return -1;
 		}
-
+		while (1)
+		{
 		//Receive a reply from the server
 		if (recv(sockfd, server_reply, 2000, 0) < 0)
 		{
