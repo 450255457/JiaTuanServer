@@ -55,21 +55,17 @@ int main(int argc, char *argv[])
 	Json::Value arrayObj;
 	Json::Value item;
 
-	item["FunctionName"] = "1";
-	item["CountryCode"] = "2";
-	item["PhoneNO"] = "3";
-	item["Pwd"] = "4";
-	arrayObj.append(item);
-
-	root["name"] = "json";
-	root["array"] = arrayObj;
+	root["FunctionName"] = "1";
+	root["CountryCode"] = "2";
+	root["PhoneNO"] = "3";
+	root["Pwd"] = "4";
 
 	// 转换为字符串（带格式）
-	//root.toStyledString();
-	//std::string out = root.toStyledString();
+	root.toStyledString();
+	std::string out = root.toStyledString();
 	// 输出无格式json字符串
-	Json::FastWriter writer;
-	std::string out = writer.write(root);
+//	Json::FastWriter writer;
+//	std::string out = writer.write(root);
 	std::cout << out << std::endl;
 
 		printf("Send message : %s\n",message);

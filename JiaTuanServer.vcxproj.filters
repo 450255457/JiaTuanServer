@@ -474,6 +474,9 @@
     <ClCompile Include="src\workqueue.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\server_threaded.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\locker.h">
@@ -833,9 +836,6 @@
     <ClInclude Include="src\libevent\util-internal.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\http_server.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="src\http_parser.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -870,6 +870,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\workqueue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\server_threaded.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

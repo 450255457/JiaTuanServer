@@ -135,6 +135,7 @@
     <ClCompile Include="libevent\test\tinytest.c" />
     <ClCompile Include="libevent\win32select.c" />
     <ClCompile Include="src\data_base.cpp" />
+    <ClCompile Include="src\server_threaded.c" />
     <ClCompile Include="src\http_parser.c" />
     <ClCompile Include="src\jsoncpp\src\jsontestrunner\main.cpp" />
     <ClCompile Include="src\jsoncpp\src\lib_json\json_reader.cpp" />
@@ -347,7 +348,7 @@
     <ClInclude Include="src\libevent\WIN32-Code\tree.h" />
     <ClInclude Include="src\locker.h" />
     <ClInclude Include="src\public_function.h" />
-    <ClInclude Include="src\http_server.h" />
+    <ClInclude Include="src\server_threaded.h" />
     <ClInclude Include="src\thread_pool.h" />
     <ClInclude Include="src\thread_pool9.h" />
     <ClInclude Include="src\workqueue.h" />
