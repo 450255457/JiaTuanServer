@@ -60,6 +60,15 @@ typedef struct client {
 	* are connection-specific. */
 } client_t;
 
+typedef struct _Packet{
+	unsigned char pkg_head[2];
+	unsigned char pkg_type[2];
+	unsigned int pkg_len;
+	char pkg_content[pkg_len];
+	unsigned char pkg_cs;
+	unsigned char pkg_end[2];
+}Packet;
+
 class CServer
 {  
 public:  
