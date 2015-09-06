@@ -5,6 +5,22 @@
 > Date : 2015-08-31
 *******************************************/
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <errno.h>
+#include <err.h>
+#include <event.h>
+#include <signal.h>
+
+#include "workqueue.h"
+
 #ifndef _SERVER_THREADED_H
 #define _SERVER_THREADED_H
 
@@ -18,23 +34,39 @@
 /* Number of worker threads.  Should match number of CPU cores reported in /proc/cpuinfo. */
 #define NUM_THREADS 8
 
-class CHttpServer
+/* Behaves similarly to fprintf(stderr, ...), but adds file, line, and function information. */
+#define errorOut(...) {\
+	fprintf(stderr, "%s:%d: %s():\t", __FILE__, __LINE__, __FUNCTION__); \
+	fprintf(stderr, __VA_ARGS__); \
+}
+
+/**
+* Struct to carry around connection (client)-specific data.
+*/
+typedef struct client {
+	/* The client's socket. */
+	int fd;
+
+	/* The event_base for this client. */
+	struct event_base *evbase;
+
+	/* The bufferedevent for this client. */
+	struct bufferevent *buf_ev;
+
+	/* The output buffer for this client. */
+	struct evbuffer *output_buffer;
+
+	/* Here you can add your own application-specific attributes which
+	* are connection-specific. */
+} client_t;
+
+class CServer
 {  
 public:  
-	CHttpServer();
-	~CHttpServer();
-	
-	int socket_bind(const char *ip,int nPort);
-	int do_epoll(int socketfd);
-	void add_event( int epollfd, int fd, bool enable_et);
-	void edge_trigger( epoll_event* events, int nfds, int epollfd, int socketfd );
-	int setnonblocking( int fd );
-	void addfd(int epollfd,int fd,bool oneshot);
-	int ev_select(int socketfd);
-	void reset_oneshot(int epollfd,int fd);
+	CServer();
+	~CServer();
 		
 private:
-	locker m_arglocker;			//传入队列的锁
 };  
 
 #endif

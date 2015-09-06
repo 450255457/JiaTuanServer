@@ -1,66 +1,11 @@
-/**
-* Multithreaded, libevent-based socket server.
-* Copyright (c) 2012 Ronald Bennett Cemer
-* This software is licensed under the BSD license.
-* See the accompanying LICENSE.txt for details.
-*
-* To compile: gcc -g -o echoserver_threaded echoserver_threaded.c workqueue.c -levent -lpthread
-* To run: ./echoserver_threaded
-*/
+/*****************************************
+> File Name : server_threaded.c
+> Description : server_threaded.c  file
+> Author : linden
+> Date : 2015-09-06
+*******************************************/
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <errno.h>
-#include <err.h>
-#include <event.h>
-#include <signal.h>
-
-//#include "server_threaded.h"
-#include "workqueue.h"
-
-/* Port to listen on. */
-#define SERVER_PORT 8090
-/* Connection backlog (# of backlogged connections to accept). */
-#define CONNECTION_BACKLOG 8
-/* Socket read and write timeouts, in seconds. */
-#define SOCKET_READ_TIMEOUT_SECONDS 10
-#define SOCKET_WRITE_TIMEOUT_SECONDS 10
-/* Number of worker threads.  Should match number of CPU cores reported in /proc/cpuinfo. */
-#define NUM_THREADS 8
-
-/* Behaves similarly to fprintf(stderr, ...), but adds file, line, and function
-information. */
-#define errorOut(...) {\
-	fprintf(stderr, "%s:%d: %s():\t", __FILE__, __LINE__, __FUNCTION__); \
-	fprintf(stderr, __VA_ARGS__); \
-}
-
-/**
-* Struct to carry around connection (client)-specific data.
-*/
-typedef struct client {
-	/* The client's socket. */
-	int fd;
-
-	/* The event_base for this client. */
-	struct event_base *evbase;
-
-	/* The bufferedevent for this client. */
-	struct bufferevent *buf_ev;
-
-	/* The output buffer for this client. */
-	struct evbuffer *output_buffer;
-
-	/* Here you can add your own application-specific attributes which
-	* are connection-specific. */
-} client_t;
+#include "server_threaded.h"
 
 static struct event_base *evbase_accept;
 static workqueue_t workqueue;
@@ -116,26 +61,34 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 	client_t *client = (client_t *)arg;
 	char data[4096];
 	int nbytes;
+	nbytes = EVBUFFER_LENGTH(bev->input);
+	evbuffer_remove(bev->input, data, nbytes);
+	//½âÎödata
+	char *pdata = data;
+	while ('\0' != *pdata)
+	{
 
-	/* Copy the data from the input buffer to the output buffer in 4096-byte chunks.
-	* There is a one-liner to do the whole thing in one shot, but the purpose of this server
-	* is to show actual real-world reading and writing of the input and output buffers,
-	* so we won't take that shortcut here. */
-	while ((nbytes = EVBUFFER_LENGTH(bev->input)) > 0) {
-		/* Remove a chunk of data from the input buffer, copying it into our local array (data). */
-		if (nbytes > 4096) nbytes = 4096;
-		evbuffer_remove(bev->input, data, nbytes);
-		/* Add the chunk of data from our local array (data) to the client's output buffer. */
-		//evbuffer_add(client->output_buffer, data, nbytes);
-		
 	}
-	evbuffer_add(client->output_buffer, "test", 5);
-	/* Send the results to the client.  This actually only queues the results for sending.
-	* Sending will occur asynchronously, handled by libevent. */
-	if (bufferevent_write_buffer(bev, client->output_buffer)) {
-		errorOut("Error sending data to client on fd %d\n", client->fd);
-		closeClient(client);
-	}
+	
+
+	///* Copy the data from the input buffer to the output buffer in 4096-byte chunks.
+	//* There is a one-liner to do the whole thing in one shot, but the purpose of this server
+	//* is to show actual real-world reading and writing of the input and output buffers,
+	//* so we won't take that shortcut here. */
+	//while ((nbytes = EVBUFFER_LENGTH(bev->input)) > 0) {
+	//	/* Remove a chunk of data from the input buffer, copying it into our local array (data). */
+	//	if (nbytes > 4096) nbytes = 4096;
+	//	evbuffer_remove(bev->input, data, nbytes);
+	//	/* Add the chunk of data from our local array (data) to the client's output buffer. */
+	//	evbuffer_add(client->output_buffer, data, nbytes);
+	//}
+
+	///* Send the results to the client.  This actually only queues the results for sending.
+	//* Sending will occur asynchronously, handled by libevent. */
+	//if (bufferevent_write_buffer(bev, client->output_buffer)) {
+	//	errorOut("Error sending data to client on fd %d\n", client->fd);
+	//	closeClient(client);
+	//}
 }
 
 /**
