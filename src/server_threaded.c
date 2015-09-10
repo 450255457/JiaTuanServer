@@ -71,6 +71,11 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 		{
 			printf("*pdata++ = %x,==\n",*pdata++);
 		}
+		if (0 == memcmp(*pdata,HEAD,2))
+		{
+			printf("real ==\n");
+		}
+		
 		if (bufferevent_write_buffer(bev, client->output_buffer)) {
 			errorOut("Error sending data to client on fd %d\n", client->fd);
 			closeClient(client);
