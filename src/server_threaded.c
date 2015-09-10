@@ -59,7 +59,7 @@ static void closeAndFreeClient(client_t *client) {
 */
 void buffered_on_read(struct bufferevent *bev, void *arg) {
 	client_t *client = (client_t *)arg;
-	char data[BUF_MAX_SIZE];
+	char data[BUF_MAX_SIZE] = {0};
 	int nbytes;
 	nbytes = EVBUFFER_LENGTH(bev->input);
 	evbuffer_remove(bev->input, data, nbytes);
