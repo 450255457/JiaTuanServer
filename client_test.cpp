@@ -67,8 +67,8 @@ int main(int argc, char *argv[])
 ////	Json::FastWriter writer;
 ////	std::string out = writer.write(root);
 //	std::cout << out << std::endl;
-		sprintf(message, "\x54\x89\x0\x1\x1\x1\x1\x1\x1\x1\xCD\xEA")
-		printf("Send message : %s\n",message.c_str());
+		sprintf(message, "\x54\x89\x0\x1\x1\x1\x1\x1\x1\x1\xCD\xEA");
+		printf("Send message : %s\n",message);
 
 		//Send some data
 		if (send(sockfd, message, strlen(message), 0) < 0)
