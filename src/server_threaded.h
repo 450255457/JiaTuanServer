@@ -24,8 +24,8 @@
 
 #include "workqueue.h"
 
-#define HEAD	"0x5489"
-#define END		"0xCDEA"
+#define HEAD	"\x54\x89"
+#define END		"\xCD\xEA"
 #define HEAD1	0x54
 #define	HEAD2	0x89
 #define END1	0xCD
