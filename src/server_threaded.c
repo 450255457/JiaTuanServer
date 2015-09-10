@@ -245,10 +245,8 @@ int runServer(void) {
 	sigaction(SIGINT, &siginfo, NULL);
 	sigaction(SIGTERM, &siginfo, NULL);
 	Packet DataPacket;
-	memcpy(DataPacket.pkg_head[0], HEAD1, 1);
-	memcpy(DataPacket.pkg_head[1], HEAD2, 1);
-	memcpy(DataPacket.pkg_end[0], END1, 1);
-	memcpy(DataPacket.pkg_end[1], END2, 1);
+	memcpy(DataPacket.pkg_head, HEAD, 2);
+	memcpy(DataPacket.pkg_end, END, 2);
 	/* Create our listening socket. */
 	listenfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (listenfd < 0) {
