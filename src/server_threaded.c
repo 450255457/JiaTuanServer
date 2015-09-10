@@ -69,9 +69,12 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 	{
 		if ((HEAD1 != *pdata) || (HEAD2 != *pdata++))
 		{
-			printf("*pdata++ = %c,==\n",*pdata++);
+			printf("*pdata++ = %x,==\n",*pdata++);
 		}
-		
+		if (bufferevent_write_buffer(bev, client->output_buffer)) {
+			errorOut("Error sending data to client on fd %d\n", client->fd);
+			closeClient(client);
+		}
 	}
 	
 
@@ -242,8 +245,10 @@ int runServer(void) {
 	sigaction(SIGINT, &siginfo, NULL);
 	sigaction(SIGTERM, &siginfo, NULL);
 	Packet DataPacket;
-	memcpy(DataPacket.pkg_head, "\x54\x89", 2);
-	memcpy(DataPacket.pkg_end, "\xCD\xEA", 2);
+	memcpy(DataPacket.pkg_head[0], HEAD1, 1);
+	memcpy(DataPacket.pkg_head[1], HEAD2, 1);
+	memcpy(DataPacket.pkg_end[0], END1, 1);
+	memcpy(DataPacket.pkg_end[1], END2, 1);
 	/* Create our listening socket. */
 	listenfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (listenfd < 0) {

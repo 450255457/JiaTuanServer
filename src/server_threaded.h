@@ -26,6 +26,8 @@
 
 #define HEAD1	0x54
 #define	HEAD2	0x89
+#define END1	0xCD
+#define END2	0xEA
 
 /* Port to listen on. */
 #define SERVER_PORT 8090
