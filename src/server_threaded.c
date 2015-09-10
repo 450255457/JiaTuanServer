@@ -71,7 +71,7 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 		{
 			printf("*pdata++ = %x,==\n",*pdata++);
 		}
-		if (0 == memcmp(*pdata,HEAD,2))
+		if (0 == memcmp(data,HEAD,2))
 		{
 			printf("real ==\n");
 		}
