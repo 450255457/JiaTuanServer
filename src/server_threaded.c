@@ -59,7 +59,7 @@ static void closeAndFreeClient(client_t *client) {
 */
 void buffered_on_read(struct bufferevent *bev, void *arg) {
 	client_t *client = (client_t *)arg;
-	char data[4096];
+	char data[BUF_MAX_SIZE];
 	int nbytes;
 	nbytes = EVBUFFER_LENGTH(bev->input);
 	evbuffer_remove(bev->input, data, nbytes);
@@ -67,7 +67,11 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 	char *pdata = data;
 	while ('\0' != *pdata)
 	{
-
+		if ((HEAD1 != *pdata) || (HEAD2 != *pdata++))
+		{
+			printf("*pdata++ = %c,==\n",*pdata++);
+		}
+		
 	}
 	
 
@@ -237,7 +241,9 @@ int runServer(void) {
 	siginfo.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &siginfo, NULL);
 	sigaction(SIGTERM, &siginfo, NULL);
-
+	Packet DataPacket;
+	memcpy(DataPacket.pkg_head, "\x54\x89", 2);
+	memcpy(DataPacket.pkg_end, "\xCD\xEA", 2);
 	/* Create our listening socket. */
 	listenfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (listenfd < 0) {

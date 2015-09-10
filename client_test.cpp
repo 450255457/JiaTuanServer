@@ -51,23 +51,23 @@ int main(int argc, char *argv[])
 		//sprintf(message, "POST / HTTP/1.1\r\nHost: www.qujiatuan.com\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: 12\r\nConnection:close\r\n\r\nsn=123&n=asa");
 	//sprintf(message, "sn=123&n=asa");Json::Value root;
 
-	Json::Value root;
-	Json::Value arrayObj;
-	Json::Value item;
-
-	root["FunctionName"] = "1";
-	root["CountryCode"] = "2";
-	root["PhoneNO"] = "3";
-	root["Pwd"] = "4";
-
-	// 转换为字符串（带格式）
-	root.toStyledString();
-	std::string out = root.toStyledString();
-	// 输出无格式json字符串
-//	Json::FastWriter writer;
-//	std::string out = writer.write(root);
-	std::cout << out << std::endl;
-
+//	Json::Value root;
+//	Json::Value arrayObj;
+//	Json::Value item;
+//
+//	root["FunctionName"] = "1";
+//	root["CountryCode"] = "2";
+//	root["PhoneNO"] = "3";
+//	root["Pwd"] = "4";
+//
+//	// 转换为字符串（带格式）
+//	root.toStyledString();
+//	std::string out = root.toStyledString();
+//	// 输出无格式json字符串
+////	Json::FastWriter writer;
+////	std::string out = writer.write(root);
+//	std::cout << out << std::endl;
+		sprintf(message, "\x54\x89\x0\x1\x1\x1\x1\x1\x1\x1\xCD\xEA")
 		printf("Send message : %s\n",message);
 
 		//Send some data

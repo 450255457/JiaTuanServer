@@ -5,6 +5,9 @@
 > Date : 2015-08-31
 *******************************************/
 
+#ifndef _SERVER_THREADED_H
+#define _SERVER_THREADED_H
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -21,8 +24,8 @@
 
 #include "workqueue.h"
 
-#ifndef _SERVER_THREADED_H
-#define _SERVER_THREADED_H
+#define HEAD1	0x54
+#define	HEAD2	0x89
 
 /* Port to listen on. */
 #define SERVER_PORT 8090
@@ -33,6 +36,7 @@
 #define SOCKET_WRITE_TIMEOUT_SECONDS 10
 /* Number of worker threads.  Should match number of CPU cores reported in /proc/cpuinfo. */
 #define NUM_THREADS 8
+#define BUF_MAX_SIZE	4096
 
 /* Behaves similarly to fprintf(stderr, ...), but adds file, line, and function information. */
 #define errorOut(...) {\
@@ -64,7 +68,7 @@ typedef struct _Packet{
 	unsigned char pkg_head[2];
 	unsigned char pkg_type[2];
 	unsigned int pkg_len;
-	char pkg_content[pkg_len];
+	char pkg_content[BUF_MAX_SIZE];
 	unsigned char pkg_cs;
 	unsigned char pkg_end[2];
 }Packet;
