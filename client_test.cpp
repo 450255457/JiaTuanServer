@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 ////	Json::FastWriter writer;
 ////	std::string out = writer.write(root);
 //	std::cout << out << std::endl;
-		sprintf(message, "\x54\x89\x0\x1\x0\x4\x1\x2\x3\x4\x0\xCD\xEA");
+		memcpy(message, "\x54\x89\x0\x1\x0\x4\x1\x2\x3\x4\x0\xCD\xEA",13);
 		printf("Send message : %s\n",message);
 
 		//Send some data
