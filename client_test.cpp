@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 //	std::cout << out << std::endl;
 		//memcpy(message, "\x54\x89\x0\x1\x0\x4\x1\x2\x3\x4\x0\xCD\xEA",13);
 		message = "sn=123&n=asa";
-		printf("Send message : %s\n",message);
+		printf("Send message : %s\n",message.c_str());
 
 		//Send some data
 		if (send(sockfd, message.c_str(), message.size()/*strlen(message)13*/, 0) < 0)
