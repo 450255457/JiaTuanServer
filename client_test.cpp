@@ -22,7 +22,9 @@ int main(int argc, char *argv[])
 {
 	int sockfd;
 	struct sockaddr_in server;
-	char message[1024] = { 0 }, server_reply[2048] = {0};
+	string message = "";
+	//char message[1024] = { 0 };
+	char server_reply[2048] = { 0 };
 
 	//Create socket
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -67,11 +69,12 @@ int main(int argc, char *argv[])
 ////	Json::FastWriter writer;
 ////	std::string out = writer.write(root);
 //	std::cout << out << std::endl;
-		memcpy(message, "\x54\x89\x0\x1\x0\x4\x1\x2\x3\x4\x0\xCD\xEA",13);
+		//memcpy(message, "\x54\x89\x0\x1\x0\x4\x1\x2\x3\x4\x0\xCD\xEA",13);
+		message = "sn=123&n=asa";
 		printf("Send message : %s\n",message);
 
 		//Send some data
-		if (send(sockfd, message, /*strlen(message)*/13, 0) < 0)
+		if (send(sockfd, message.c_str(), message.size()/*strlen(message)13*/, 0) < 0)
 		{
 			puts("Send failed");
 			return -1;
