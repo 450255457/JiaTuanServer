@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 		printf("Send message : %s\n",message);
 
 		//Send some data
-		if (send(sockfd, message, strlen(message), 0) < 0)
+		if (send(sockfd, message, /*strlen(message)*/13, 0) < 0)
 		{
 			puts("Send failed");
 			return -1;
