@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 {
 	int sockfd;
 	struct sockaddr_in server;
-	char message[1024], server_reply[2048];
+	char message[1024] = { 0 }, server_reply[2048] = {0};
 
 	//Create socket
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);

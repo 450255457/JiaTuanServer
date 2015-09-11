@@ -75,7 +75,7 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 		{
 			printf("real ==\n");
 		}
-		
+		evbuffer_add(client->output_buffer, data, nbytes);
 		if (bufferevent_write_buffer(bev, client->output_buffer)) {
 			errorOut("Error sending data to client on fd %d\n", client->fd);
 			closeClient(client);
