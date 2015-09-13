@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2000-2007 Niels Provos <provos@citi.umich.edu>
  * Copyright (c) 2007-2012 Niels Provos and Nick Mathewson
  *
@@ -728,22 +728,22 @@ int event_base_got_break(struct event_base *);
 /**@{*/
 /** Indicates that a timeout has occurred.  It's not necessary to pass
  * this flag to event_for new()/event_assign() to get a timeout. */
-#define EV_TIMEOUT	0x01
+#define EV_TIMEOUT	0x01	//定时事件
 /** Wait for a socket or FD to become readable */
-#define EV_READ		0x02
+#define EV_READ		0x02	//可读事件
 /** Wait for a socket or FD to become writeable */
-#define EV_WRITE	0x04
+#define EV_WRITE	0x04	//可写事件
 /** Wait for a POSIX signal to be raised*/
-#define EV_SIGNAL	0x08
+#define EV_SIGNAL	0x08	//信号事件
 /**
  * Persistent event: won't get removed automatically when activated.
  *
  * When a persistent event with a timeout becomes activated, its timeout
  * is reset to 0.
  */
-#define EV_PERSIST	0x10
+#define EV_PERSIST	0x10	//永久事件
 /** Select edge-triggered behavior, if supported by the backend. */
-#define EV_ET       0x20
+#define EV_ET       0x20	//边延触发事件,需要I/O复用系统调用支持,比如epoll
 /**@}*/
 
 /**
