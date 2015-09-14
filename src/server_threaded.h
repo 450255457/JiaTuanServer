@@ -24,13 +24,7 @@
 #include <json/json.h>
 
 #include "workqueue.h"
-
-#define HEAD	"\x54\x89"
-#define END		"\xCD\xEA"
-#define HEAD1	0x54
-#define	HEAD2	0x89
-#define END1	0xCD
-#define END2	0xEA
+#include "data_base.h"
 
 /* Port to listen on. */
 #define SERVER_PORT 8090
@@ -48,6 +42,8 @@
 	fprintf(stderr, "%s:%d: %s():\t", __FILE__, __LINE__, __FUNCTION__); \
 	fprintf(stderr, __VA_ARGS__); \
 }
+
+using namespace std;
 
 /**
 * Struct to carry around connection (client)-specific data.

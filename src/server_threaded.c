@@ -7,8 +7,6 @@
 
 #include "server_threaded.h"
 
-using namespace std;
-
 static struct event_base *evbase_accept;
 static workqueue_t workqueue;
 
@@ -70,14 +68,24 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 	printf("sdata = %s\n", sdata.c_str());
 	Json::Reader reader;
 	Json::Value value;
-	if (reader.parse(sdata, value))
+	if (reader.parse(sdata, value) && (!value["FunctionName"].isNull()))
 	{
-		if (!value["FunctionName"].isNull())
+		CDatabase MyDB;
+		MyDB.initDB("localhost", "root", "123456", "JiaTuanSql");
+		if ("register" == value["FunctionName"].asString)
 		{
 			cout << value["CountryCode"].asInt() << endl;
 			cout << value["PhoneNO"].asString() << endl;
 			cout << value["Pwd"].asString() << endl;
+			if (MyDB.user_register(value["PhoneNO"].asString(), value["Pwd"].asString()))
+			{
+				sdata = 0;
+			}
 		}
+	}
+	else
+	{
+		sdata = -1;
 	}
 	evbuffer_add(client->output_buffer, sdata.c_str(), nbytes);
 	if (bufferevent_write_buffer(bev, client->output_buffer)) {
