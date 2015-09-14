@@ -68,6 +68,17 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 	//½âÎödata
 	string sdata = data;
 	printf("sdata = %s\n", sdata.c_str());
+	Json::Reader reader;
+	Json::Value value;
+	if (reader.parse(sdata, value))
+	{
+		if (!value["FunctionName"].isNull())
+		{
+			cout << value["CountryCode"].asInt() << endl;
+			cout << value["PhoneNO"].asString() << endl;
+			cout << value["Pwd"].asString() << endl;
+		}
+	}
 	evbuffer_add(client->output_buffer, sdata.c_str(), nbytes);
 	if (bufferevent_write_buffer(bev, client->output_buffer)) {
 		errorOut("Error sending data to client on fd %d\n", client->fd);
