@@ -72,7 +72,8 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 	{
 		CDatabase MyDB;
 		MyDB.initDB("localhost", "root", "123456", "JiaTuanSql");
-		if (!value["FunctionName"].asString.compare("register"))
+		string sFunctionName = value["FunctionName"].asString;
+		if ("register" == sFunctionName)
 		{
 			cout << value["CountryCode"].asInt() << endl;
 			cout << value["PhoneNO"].asString() << endl;
