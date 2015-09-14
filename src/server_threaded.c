@@ -75,7 +75,7 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 		if (!value["FunctionName"].isNull())
 		{
 			cout << value["CountryCode"].asInt() << endl;
-			cout << value["PhoneNO"].asString() << endl;
+			cout << value["PhoneNO"].asInt() << endl;
 			cout << value["Pwd"].asString() << endl;
 		}
 	}
