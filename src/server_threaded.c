@@ -7,6 +7,8 @@
 
 #include "server_threaded.h"
 
+using namespace std;
+
 static struct event_base *evbase_accept;
 static workqueue_t workqueue;
 
@@ -64,23 +66,14 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 	nbytes = EVBUFFER_LENGTH(bev->input);
 	evbuffer_remove(bev->input, data, nbytes);
 	//½âÎödata
-	char *pdata = data;
-	while ('\0' != *pdata)
-	{
-		if ((HEAD1 != *pdata) || (HEAD2 != *pdata++))
-		{
-			printf("*pdata++ = %x,==\n",*pdata++);
-		}
-		if (0 == memcmp(data,HEAD,2))
-		{
-			printf("real ==\n");
-		}
-		evbuffer_add(client->output_buffer, data, nbytes);
-		if (bufferevent_write_buffer(bev, client->output_buffer)) {
-			errorOut("Error sending data to client on fd %d\n", client->fd);
-			closeClient(client);
-		}
+	string sdata = data;
+	printf("sdata = %s\n", sdata.c_str());
+	evbuffer_add(client->output_buffer, sdata.c_str(), nbytes);
+	if (bufferevent_write_buffer(bev, client->output_buffer)) {
+		errorOut("Error sending data to client on fd %d\n", client->fd);
+		closeClient(client);
 	}
+	
 	
 
 	///* Copy the data from the input buffer to the output buffer in 4096-byte chunks.

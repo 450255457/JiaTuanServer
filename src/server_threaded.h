@@ -21,6 +21,7 @@
 #include <err.h>
 #include <event.h>
 #include <signal.h>
+#include <json/json.h>
 
 #include "workqueue.h"
 

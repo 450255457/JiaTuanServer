@@ -57,10 +57,10 @@ int main(int argc, char *argv[])
 		Json::Value arrayObj;
 		Json::Value item;
 	
-		root["FunctionName"] = "1";
-		root["CountryCode"] = "2";
-		root["PhoneNO"] = "3";
-		root["Pwd"] = "4";
+		root["FunctionName"] = "register";
+		root["CountryCode"] = "86";
+		root["PhoneNO"] = "13814381438";
+		root["Pwd"] = "123456";
 	
 		// 转换为字符串（带格式）
 		//root.toStyledString();
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 		std::string out = writer.write(root);
 		std::cout << out << std::endl;
 		//memcpy(message, "\x54\x89\x0\x1\x0\x4\x1\x2\x3\x4\x0\xCD\xEA",13);
-		message = "FunctionNameMessage";
+		message = out;
 		printf("Send message : %s\n",message.c_str());
 
 		//Send some data
