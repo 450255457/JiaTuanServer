@@ -67,7 +67,8 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 	string sdata = data;
 	printf("sdata = %s\n", sdata.c_str());
 	Json::Reader reader;
-	Json::Value value;
+	Json::Value value,return_item;
+	Json::FastWriter writer_item;
 	if (reader.parse(sdata, value) && (!value["FunctionName"].isNull()))
 	{
 		CDatabase MyDB;
@@ -75,19 +76,24 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 		string sFunctionName = value["FunctionName"].asString();
 		if ("register" == sFunctionName)
 		{
-			cout << value["CountryCode"].asInt() << endl;
-			cout << value["PhoneNO"].asString() << endl;
-			cout << value["Pwd"].asString() << endl;
 			if (MyDB.user_register(value["PhoneNO"].asString(), value["Pwd"].asString()))
 			{
-				sdata = "0";
+				return_item["errCode"] = 0;
 			}
+			else
+			{
+				return_item["errCode"] = -11;
+				return_item["resultDesc"] = "register failed.";
+			}
+
 		}
 	}
 	else
 	{
-		sdata = "-1";
+		return_item["errCode"] = -12;
+		return_item["resultDesc"] = "Error:json data parse.";
 	}
+	sdata = writer_item.write(return_item);
 	evbuffer_add(client->output_buffer, sdata.c_str(), nbytes);
 	if (bufferevent_write_buffer(bev, client->output_buffer)) {
 		errorOut("Error sending data to client on fd %d\n", client->fd);
