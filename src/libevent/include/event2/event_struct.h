@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2000-2007 Niels Provos <provos@citi.umich.edu>
  * Copyright (c) 2007-2012 Niels Provos and Nick Mathewson
  *
@@ -54,15 +54,15 @@ extern "C" {
 /* For evkeyvalq */
 #include <event2/keyvalq_struct.h>
 
-#define EVLIST_TIMEOUT	0x01
-#define EVLIST_INSERTED	0x02
-#define EVLIST_SIGNAL	0x04
-#define EVLIST_ACTIVE	0x08
-#define EVLIST_INTERNAL	0x10
-#define EVLIST_INIT	0x80
+#define EVLIST_TIMEOUT	0x01	//事件处理器从属于通用定时器队列形成时间堆
+#define EVLIST_INSERTED	0x02	//事件处理器从属于注册事件队列
+#define EVLIST_SIGNAL	0x04	//没有使用
+#define EVLIST_ACTIVE	0x08	//事件处理器从属于活动事件队列
+#define EVLIST_INTERNAL	0x10	//内部使用
+#define EVLIST_INIT	0x80		//事件处理器已经被初始化
 
 /* EVLIST_X_ Private space: 0x1000-0xf000 */
-#define EVLIST_ALL	(0xf000 | 0x9f)
+#define EVLIST_ALL	(0xf000 | 0x9f)	//定义所有标志
 
 /* Fix so that people don't have to run with <sys/queue.h> */
 #ifndef TAILQ_ENTRY
@@ -85,14 +85,14 @@ struct name {					\
 
 struct event_base;
 struct event {
-	TAILQ_ENTRY(event) ev_active_next;
-	TAILQ_ENTRY(event) ev_next;
+	TAILQ_ENTRY(event) ev_active_next;	//活动事件队列
+	TAILQ_ENTRY(event) ev_next;	//注册事件队列
 	/* for managing timeouts */
 	union {
 		TAILQ_ENTRY(event) ev_next_with_common_timeout;
 		int min_heap_idx;
-	} ev_timeout_pos;
-	evutil_socket_t ev_fd;
+	} ev_timeout_pos;	//定时事件处理器		
+	evutil_socket_t ev_fd;	//文件描述符值或者信号值
 
 	struct event_base *ev_base;
 
@@ -101,7 +101,7 @@ struct event {
 		struct {
 			TAILQ_ENTRY(event) ev_io_next;
 			struct timeval ev_timeout;
-		} ev_io;
+		} ev_io;	//I/O事件队列
 
 		/* used by signal events */
 		struct {
@@ -109,19 +109,19 @@ struct event {
 			short ev_ncalls;
 			/* Allows deletes in callback */
 			short *ev_pncalls;
-		} ev_signal;
+		} ev_signal;	//信号事件队列
 	} _ev;
 
-	short ev_events;
-	short ev_res;		/* result passed to event callback */
+	short ev_events;	//事件类型
+	short ev_res;		/* result passed to event callback *///记录当前激活事件的类型
 	short ev_flags;
-	ev_uint8_t ev_pri;	/* smaller numbers are higher priority */
-	ev_uint8_t ev_closure;
-	struct timeval ev_timeout;
+	ev_uint8_t ev_pri;	/* smaller numbers are higher priority *///事件处理器优先级,值越小则优先级越高
+	ev_uint8_t ev_closure;	//指定event_base执行事件处理器的回调函数时的行为
+	struct timeval ev_timeout;	//定时器的超时值
 
 	/* allows us to adopt for different types of events */
 	void (*ev_callback)(evutil_socket_t, short, void *arg);
-	void *ev_arg;
+	void *ev_arg;	//回调函数的参数
 };
 
 TAILQ_HEAD (event_list, event);

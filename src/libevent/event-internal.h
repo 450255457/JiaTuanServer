@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2000-2007 Niels Provos <provos@citi.umich.edu>
  * Copyright (c) 2007-2012 Niels Provos and Nick Mathewson
  *
@@ -52,9 +52,9 @@ extern "C" {
 #define ev_pncalls	_ev.ev_signal.ev_pncalls
 
 /* Possible values for ev_closure in struct event. */
-#define EV_CLOSURE_NONE 0
-#define EV_CLOSURE_SIGNAL 1
-#define EV_CLOSURE_PERSIST 2
+#define EV_CLOSURE_NONE 0	//默认行为
+#define EV_CLOSURE_SIGNAL 1	//执行信号事件处理器的回调函数时,调用ev.ev_signal.ev_ncalls次该回调函数
+#define EV_CLOSURE_PERSIST 2	//执行完回调函数后,再次将事件处理器加入注册事件队列中
 
 /** Structure to define the backend of a given event_base. */
 struct eventop {
