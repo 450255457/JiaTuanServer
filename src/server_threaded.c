@@ -95,7 +95,7 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 	}
 	sdata = writer_item.write(return_item);
 	printf("send sdata : %s\n", sdata.c_str());
-	evbuffer_add(client->output_buffer, sdata.c_str(), nbytes);
+	evbuffer_add(client->output_buffer, sdata.c_str(), sdata.size());
 	if (bufferevent_write_buffer(bev, client->output_buffer)) {
 		errorOut("Error sending data to client on fd %d\n", client->fd);
 		closeClient(client);
