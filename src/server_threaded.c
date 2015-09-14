@@ -72,20 +72,20 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 	{
 		CDatabase MyDB;
 		MyDB.initDB("localhost", "root", "123456", "JiaTuanSql");
-		if ("register" == value["FunctionName"].asString)
+		if (!value["FunctionName"].asString.compare("register"))
 		{
 			cout << value["CountryCode"].asInt() << endl;
 			cout << value["PhoneNO"].asString() << endl;
 			cout << value["Pwd"].asString() << endl;
 			if (MyDB.user_register(value["PhoneNO"].asString(), value["Pwd"].asString()))
 			{
-				sdata = 0;
+				sdata = "0";
 			}
 		}
 	}
 	else
 	{
-		sdata = -1;
+		sdata = "-1";
 	}
 	evbuffer_add(client->output_buffer, sdata.c_str(), nbytes);
 	if (bufferevent_write_buffer(bev, client->output_buffer)) {
@@ -261,9 +261,6 @@ int runServer(void) {
 	siginfo.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &siginfo, NULL);
 	sigaction(SIGTERM, &siginfo, NULL);
-	Packet DataPacket;
-	memcpy(DataPacket.pkg_head, HEAD, 2);
-	memcpy(DataPacket.pkg_end, END, 2);
 	/* Create our listening socket. */
 	listenfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (listenfd < 0) {

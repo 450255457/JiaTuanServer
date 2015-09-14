@@ -1,4 +1,4 @@
-/*****************************************
+ï»¿/*****************************************
 > File Name : data_base.c
 > Description : data_base.c  file
 > Author : linden
@@ -9,7 +9,7 @@
 
 CDatabase::CDatabase()  
 {  
-    connection = mysql_init(NULL); // ³õÊ¼»¯Êı¾İ¿âÁ¬½Ó±äÁ¿  
+    connection = mysql_init(NULL); // åˆå§‹åŒ–æ•°æ®åº“è¿æ¥å˜é‡  
     if(connection == NULL)  
     {  
         cout << "Error:" << mysql_error(connection);  
@@ -19,7 +19,7 @@ CDatabase::CDatabase()
   
 CDatabase::~CDatabase()  
 {  
-    if(connection != NULL)  // ¹Ø±ÕÊı¾İ¿âÁ¬½Ó  
+    if(connection != NULL)  // å…³é—­æ•°æ®åº“è¿æ¥  
     {  
         mysql_close(connection);  
     }  
@@ -27,8 +27,8 @@ CDatabase::~CDatabase()
   
 bool CDatabase::initDB(string host, string user, string pwd, string db_name)  
 {  
-    // º¯Êımysql_real_connect½¨Á¢Ò»¸öÊı¾İ¿âÁ¬½Ó  
-    // ³É¹¦·µ»ØMYSQL*Á¬½Ó¾ä±ú£¬Ê§°Ü·µ»ØNULL  
+    // å‡½æ•°mysql_real_connectå»ºç«‹ä¸€ä¸ªæ•°æ®åº“è¿æ¥  
+    // æˆåŠŸè¿”å›MYSQL*è¿æ¥å¥æŸ„ï¼Œå¤±è´¥è¿”å›NULL  
     connection = mysql_real_connect(connection, host.c_str(),  
             user.c_str(), pwd.c_str(), db_name.c_str(), 0, NULL, 0);  
     if(connection == NULL)  
@@ -41,7 +41,7 @@ bool CDatabase::initDB(string host, string user, string pwd, string db_name)
   
 bool CDatabase::executeSQL(string sql)  
 {  
-    // mysql_query()Ö´ĞĞ³É¹¦·µ»Ø0£¬Ê§°Ü·µ»Ø·Ç0Öµ¡£ÓëPHPÖĞ²»Ò»Ñù  
+    // mysql_query()æ‰§è¡ŒæˆåŠŸè¿”å›0ï¼Œå¤±è´¥è¿”å›é0å€¼ã€‚ä¸PHPä¸­ä¸ä¸€æ ·  
     if(mysql_query(connection, sql.c_str()))
     {  
         cout << "Query Error:" << mysql_error(connection);  
@@ -49,24 +49,24 @@ bool CDatabase::executeSQL(string sql)
     }  
     else  
     {  
-        result = mysql_use_result(connection); // »ñÈ¡½á¹û¼¯  
-        // mysql_field_count()·µ»Øconnection²éÑ¯µÄÁĞÊı  
+        result = mysql_use_result(connection); // è·å–ç»“æœé›†  
+        // mysql_field_count()è¿”å›connectionæŸ¥è¯¢çš„åˆ—æ•°  
         for(int i=0; i < mysql_field_count(connection); ++i)  
         {  
-            // »ñÈ¡ÏÂÒ»ĞĞ  
+            // è·å–ä¸‹ä¸€è¡Œ  
             row = mysql_fetch_row(result);  
             if(row <= 0)  
             {  
                 break;  
             }  
-            // mysql_num_fields()·µ»Ø½á¹û¼¯ÖĞµÄ×Ö¶ÎÊı  
+            // mysql_num_fields()è¿”å›ç»“æœé›†ä¸­çš„å­—æ®µæ•°  
             for(int j=0; j < mysql_num_fields(result); ++j)  
             {  
                 cout << row[j] << " ";  
             }  
             cout << endl;  
         }  
-        // ÊÍ·Å½á¹û¼¯µÄÄÚ´æ  
+        // é‡Šæ”¾ç»“æœé›†çš„å†…å­˜  
         mysql_free_result(result);  
     }  
     return true;  
@@ -75,7 +75,7 @@ bool CDatabase::executeSQL(string sql)
 
 /************************************************
 Function : user_register
-Description : ÓÃ»§×¢²á
+Description : ç”¨æˆ·æ³¨å†Œ
 Input : string user_login
 		string user_pass
 Output :
@@ -86,10 +86,10 @@ bool CDatabase::user_register(string user_login, string user_pass)
 {	
 	//string user_register_sql = "insert into jt_users (user_login,user_pass,user_registered) values ("test","test",now());";
 	string user_register_sql = "insert into jt_users (user_login,user_pass,user_registered) values (" + user_login + "," + user_pass + ",now())";
-    // mysql_query()Ö´ĞĞ³É¹¦·µ»Ø0£¬Ê§°Ü·µ»Ø·Ç0Öµ
-    if(mysql_query(connection, sql.c_str()))  
+    // mysql_query()æ‰§è¡ŒæˆåŠŸè¿”å›0ï¼Œå¤±è´¥è¿”å›é0å€¼
+	if (mysql_query(connection, user_register_sql.c_str()))
     {  
-        cout << "Query Error:" << mysql_error(connection);  
+        cout << "Query Error:" << mysql_error(connection);
         return false;  
     }
     return true;
