@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 	
 		root["FunctionName"] = "register";
 		root["CountryCode"] = 86;
-		root["PhoneNO"] = 13814381438;
+		root["PhoneNO"] = "13814381438";
 		root["Pwd"] = "123456";
 	
 		// 转换为字符串（带格式）
