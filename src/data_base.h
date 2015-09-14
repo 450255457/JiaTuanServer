@@ -8,8 +8,7 @@
 #ifndef _DATABASE_H
 #define _DATABASE_H
 
-#include <iostream>  
-#include <string>
+#include <iostream>
 #include <cstdlib>
 #include <stdlib.h>
 #include <string.h>
@@ -27,7 +26,8 @@ public:
 		
     bool	initDB(string host, string user, string pwd, string db_name);  
     bool	executeSQL(string sql);
-	bool	user_register(string user_login, string user_pass);
+	bool	user_register_func(string user_login, string user_pass);
+	bool	user_login_func(string user_login, string user_pass);
 private:  
     MYSQL *connection;  
     MYSQL_RES *result;  

@@ -72,9 +72,8 @@ bool CDatabase::executeSQL(string sql)
     return true;  
 }
 
-
 /************************************************
-Function : user_register
+Function : user_register_func
 Description : 用户注册
 Input : string user_login
 		string user_pass
@@ -82,15 +81,37 @@ Output :
 Return : true/false
 Others :
 *************************************************/
-bool CDatabase::user_register(string user_login, string user_pass)
+bool CDatabase::user_register_func(string user_login, string user_pass)
 {	
-	//string user_register_sql = "insert into jt_users (user_login,user_pass,user_registered) values ("test","test",now());";
-	string user_register_sql = "insert into jt_users (user_login,user_pass,user_registered) values (" + user_login + "," + user_pass + ",now())";
+	//string user_register_sql = "insert into jt_users (user_login,user_pass,user_registered) values ("testname","testpwd",now());";
+	string sql = "insert into jt_users (user_login,user_pass,user_registered) values (" + user_login + "," + user_pass + ",now())";
     // mysql_query()执行成功返回0，失败返回非0值
-	if (mysql_query(connection, user_register_sql.c_str()))
+	if (mysql_query(connection, sql.c_str()))
     {  
         cout << "Query Error:" << mysql_error(connection);
         return false;  
     }
     return true;
+}
+
+/************************************************
+Function : user_login_func
+Description : 用户登陆
+Input : string user_login
+	string user_pass
+Output :
+Return : true/false
+Others :
+*************************************************/
+bool CDatabase::user_login_func(string user_login, string user_pass)
+{
+	//string user_register_sql = "select * from jt_users where user_login = "13814381438" and user_pass = "123456";";
+	string sql = "select * from jt_users where user_login = " + user_login + "and user_pass = " + user_pass;
+	// mysql_query()执行成功返回0，失败返回非0值
+	if (mysql_query(connection, sql.c_str()))
+	{
+		cout << "Query Error:" << mysql_error(connection);
+		return false;
+	}
+	return true;
 }

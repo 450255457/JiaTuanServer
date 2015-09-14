@@ -76,21 +76,27 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 		string sFunctionName = value["FunctionName"].asString();
 		if ("register" == sFunctionName)
 		{
-			if (MyDB.user_register(value["PhoneNO"].asString(), value["Pwd"].asString()))
+			if (MyDB.user_register_func(value["PhoneNO"].asString(), value["Pwd"].asString()))
 			{
 				return_item["error_code"] = 0;
 			}
 			else
 			{
-				return_item["error_code"] = -11;
-				return_item["error_desc"] = "register failed.";
+				return_item["error_code"] = -111;
+				return_item["error_desc"] = "register failed,maybe user_login duplicate.";
 			}
-
+		}
+		else if ("login" == sFunctionName)
+		{
+			if (MyDB.user_login_func(value["PhoneNO"].asString(), value["Pwd"].asString()))
+			{
+				return_item["error_code"] = 0;
+			}
 		}
 	}
 	else
 	{
-		return_item["error_code"] = -12;
+		return_item["error_code"] = -112;
 		return_item["error_desc"] = "Error:json data parse.";
 	}
 	sdata = writer_item.write(return_item);
