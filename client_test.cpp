@@ -1,6 +1,7 @@
 ﻿/*****************************************
 > File Name : client_test.cpp
 > Description : C ECHO client example using sockets
+	g++ -g client_test.cpp -o Client /usr/lib/libjson_linux-gcc-4.8_libmt.a
 > Author : linden
 > Date : 2015-08-07
 *******************************************/
