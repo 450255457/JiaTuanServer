@@ -63,11 +63,11 @@ int main(int argc, char *argv[])
 		root["Pwd"] = "4";
 	
 		// 转换为字符串（带格式）
-		root.toStyledString();
-		std::string out = root.toStyledString();
+		//root.toStyledString();
+		//std::string out = root.toStyledString();
 		// 输出无格式json字符串
-	//	Json::FastWriter writer;
-	//	std::string out = writer.write(root);
+		Json::FastWriter writer;
+		std::string out = writer.write(root);
 		std::cout << out << std::endl;
 		//memcpy(message, "\x54\x89\x0\x1\x0\x4\x1\x2\x3\x4\x0\xCD\xEA",13);
 		message = "FunctionNameMessage";
