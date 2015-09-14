@@ -65,7 +65,7 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 	evbuffer_remove(bev->input, data, nbytes);
 	//½âÎödata
 	string sdata = data;
-	printf("sdata = %s\n", sdata.c_str());
+	printf("recv sdata : %s\n", sdata.c_str());
 	Json::Reader reader;
 	Json::Value value,return_item;
 	Json::FastWriter writer_item;
@@ -78,22 +78,23 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 		{
 			if (MyDB.user_register(value["PhoneNO"].asString(), value["Pwd"].asString()))
 			{
-				return_item["errCode"] = 0;
+				return_item["error_code"] = 0;
 			}
 			else
 			{
-				return_item["errCode"] = -11;
-				return_item["resultDesc"] = "register failed.";
+				return_item["error_code"] = -11;
+				return_item["error_desc"] = "register failed.";
 			}
 
 		}
 	}
 	else
 	{
-		return_item["errCode"] = -12;
-		return_item["resultDesc"] = "Error:json data parse.";
+		return_item["error_code"] = -12;
+		return_item["error_desc"] = "Error:json data parse.";
 	}
 	sdata = writer_item.write(return_item);
+	printf("send sdata : %s\n", sdata.c_str());
 	evbuffer_add(client->output_buffer, sdata.c_str(), nbytes);
 	if (bufferevent_write_buffer(bev, client->output_buffer)) {
 		errorOut("Error sending data to client on fd %d\n", client->fd);
