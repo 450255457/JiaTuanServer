@@ -59,7 +59,7 @@ static void closeAndFreeClient(client_t *client) {
 */
 void buffered_on_read(struct bufferevent *bev, void *arg) {
 	client_t *client = (client_t *)arg;
-	char data[BUF_MAX_SIZE] = {0};
+	char data[BUF_MAX_SIZE] = { 0 };
 	int nbytes;
 	nbytes = EVBUFFER_LENGTH(bev->input);
 	evbuffer_remove(bev->input, data, nbytes);
@@ -67,7 +67,7 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 	string sdata = data;
 	printf("recv sdata : %s\n", sdata.c_str());
 	Json::Reader reader;
-	Json::Value value,return_item;
+	Json::Value value, return_item;
 	Json::FastWriter writer_item;
 	if (reader.parse(sdata, value) && (!value["FunctionName"].isNull()))
 	{
@@ -100,8 +100,8 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 		errorOut("Error sending data to client on fd %d\n", client->fd);
 		closeClient(client);
 	}
-	
-	
+
+
 
 	///* Copy the data from the input buffer to the output buffer in 4096-byte chunks.
 	//* There is a one-liner to do the whole thing in one shot, but the purpose of this server
@@ -163,7 +163,7 @@ void on_accept(int fd, short ev, void *arg) {
 		warn("accept failed");
 		return;
 	}
-	printf("Run accept fd:%d\n",fd);
+	printf("Run accept fd:%d\n", fd);
 	/* Set the client socket to non-blocking mode. */
 	if (setnonblock(client_fd) < 0) {
 		warn("failed to set client socket to non-blocking");
@@ -262,8 +262,8 @@ int runServer(void) {
 		.sa_handler = sighandler,
 		.sa_mask = sigset,
 		.sa_flags = SA_RESTART,
-	};*/
-	struct sigaction siginfo; 
+		};*/
+	struct sigaction siginfo;
 	siginfo.sa_handler = sighandler;
 	siginfo.sa_mask = sigset;
 	siginfo.sa_flags = SA_RESTART;
