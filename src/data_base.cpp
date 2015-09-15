@@ -111,7 +111,7 @@ bool CDatabase::user_login_func(string user_login, string user_pass)
 	if (mysql_query(connection, sql.c_str()))
 	{
 		cout << "Query Error:" << mysql_error(connection);
-		return ;
+		return false;
 	}
 	else
 	{
