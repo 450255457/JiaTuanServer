@@ -92,11 +92,16 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 			{
 				return_item["error_code"] = 0;
 			}
+			else
+			{
+				return_item["error_code"] = -121;
+				return_item["error_desc"] = "login failed,maybe the account or password mistake.";
+			}
 		}
 	}
 	else
 	{
-		return_item["error_code"] = -112;
+		return_item["error_code"] = -11;
 		return_item["error_desc"] = "Error:json data parse.";
 	}
 	sdata = writer_item.write(return_item);

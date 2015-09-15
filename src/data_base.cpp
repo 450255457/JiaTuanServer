@@ -111,7 +111,16 @@ bool CDatabase::user_login_func(string user_login, string user_pass)
 	if (mysql_query(connection, sql.c_str()))
 	{
 		cout << "Query Error:" << mysql_error(connection);
-		return false;
+		return ;
+	}
+	else
+	{
+		// mysql_field_count()返回connection查询的列数  
+		if (!mysql_field_count(connection))
+		{
+			// query does not return data
+			return false;
+		}
 	}
 	return true;
 }
