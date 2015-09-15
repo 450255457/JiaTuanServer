@@ -56,10 +56,10 @@ int main(int argc, char *argv[])
 
 		Json::Value root;
 	
-		root["FunctionName"] = "register";
-		root["CountryCode"] = 86;
-		root["PhoneNO"] = "13814381438";
-		root["Pwd"] = "123456";
+		root["FunctionName"] = "login";
+		//root["CountryCode"] = 86;
+		root["User_login"] = "13814381438";
+		root["User_pass"] = "123456";
 	
 		// 转换为字符串（带格式）
 		//root.toStyledString();
