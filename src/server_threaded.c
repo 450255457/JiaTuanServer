@@ -88,7 +88,7 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 		}
 		else if ("login" == sFunctionName)
 		{
-			if (MyDB.user_login_func(value["PhoneNO"].asString(), value["Pwd"].asString()))
+			if (MyDB.user_login_func(value["User_login"].asString(), value["User_pass"].asString()))
 			{
 				return_item["error_code"] = 0;
 			}
