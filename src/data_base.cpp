@@ -106,7 +106,7 @@ Others :
 bool CDatabase::user_login_func(string user_login, string user_pass)
 {
 	//string user_register_sql = "select * from jt_users where user_login = "13814381438" and user_pass = "123456";";
-	string sql = "select * from jt_users where user_login = " + user_login + "and user_pass = " + user_pass;
+	string sql = "select * from jt_users where user_login = " + user_login + " and user_pass = " + user_pass;
 	// mysql_query()执行成功返回0，失败返回非0值
 	if (mysql_query(connection, sql.c_str()))
 	{
