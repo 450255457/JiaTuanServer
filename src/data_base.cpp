@@ -110,6 +110,7 @@ bool CDatabase::user_login_func(string user_login, string user_pass)
 	// mysql_query()执行成功返回0，失败返回非0值
 	if (mysql_query(connection, sql.c_str()))
 	{
+		fprintf(stderr, "Sql: %s\n", sql.c_str());
 		cout << "Query Error:" << mysql_error(connection);
 		return false;
 	}
