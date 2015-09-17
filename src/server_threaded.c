@@ -71,7 +71,7 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 	Json::FastWriter writer_item;
 	if (reader.parse(sdata, value) && (!value["FunctionName"].isNull()))
 	{
-		CDatabase MyDB;
+		CDBManager MyDB;
 		MyDB.initDB("localhost", "root", "123456", "JiaTuanSql");
 		string sFunctionName = value["FunctionName"].asString();
 		if ("register" == sFunctionName)

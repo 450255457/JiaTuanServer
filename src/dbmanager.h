@@ -1,12 +1,12 @@
 /*****************************************
-> File Name : data_base.h
-> Description : data_base.h  file
+> File Name : dbmanager.h
+> Description : dbmanager.h  file
 > Author : linden
 > Date : 2015-09-14
 *******************************************/
 
-#ifndef _DATABASE_H
-#define _DATABASE_H
+#ifndef _DBMANAGER_H_
+#define _DBMANAGER_H_
 
 #include <iostream>
 #include <cstdlib>
@@ -18,11 +18,11 @@
 
 using namespace std;
 
-class CDatabase
+class CDBManager
 {  
 public:  
-    CDatabase();  
-    ~CDatabase();
+    CDBManager();  
+    ~CDBManager();
 		
     bool	initDB(string host, string user, string pwd, string db_name);  
     bool	executeSQL(string sql);

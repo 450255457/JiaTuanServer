@@ -1,13 +1,13 @@
 ﻿/*****************************************
-> File Name : data_base.c
-> Description : data_base.c  file
+> File Name : dbmanager.cpp
+> Description : dbmanager.cpp  file
 > Author : linden
 > Date : 2015-09-14
 *******************************************/
 
-#include "data_base.h"
+#include "dbmanager.h"
 
-CDatabase::CDatabase()  
+CDBManager::CDBManager()  
 {  
     connection = mysql_init(NULL); // 初始化数据库连接变量  
     if(connection == NULL)  
@@ -17,7 +17,7 @@ CDatabase::CDatabase()
     }  
 }  
   
-CDatabase::~CDatabase()  
+CDBManager::~CDBManager()  
 {  
     if(connection != NULL)  // 关闭数据库连接  
     {  
@@ -25,7 +25,7 @@ CDatabase::~CDatabase()
     }  
 }  
   
-bool CDatabase::initDB(string host, string user, string pwd, string db_name)  
+bool CDBManager::initDB(string host, string user, string pwd, string db_name)  
 {  
     // 函数mysql_real_connect建立一个数据库连接  
     // 成功返回MYSQL*连接句柄，失败返回NULL  
@@ -39,7 +39,7 @@ bool CDatabase::initDB(string host, string user, string pwd, string db_name)
     return true;  
 }  
   
-bool CDatabase::executeSQL(string sql)  
+bool CDBManager::executeSQL(string sql)  
 {  
     // mysql_query()执行成功返回0，失败返回非0值。与PHP中不一样  
     if(mysql_query(connection, sql.c_str()))
@@ -81,7 +81,7 @@ Output :
 Return : true/false
 Others :
 *************************************************/
-bool CDatabase::user_register_func(string user_login, string user_pass)
+bool CDBManager::user_register_func(string user_login, string user_pass)
 {	
 	//string user_register_sql = "insert into jt_users (user_login,user_pass,user_registered) values ("testname","testpwd",now());";
 	string sql = "insert into jt_users (user_login,user_pass,user_registered) values (" + user_login + "," + user_pass + ",now())";
@@ -103,7 +103,7 @@ Output :
 Return : true/false
 Others :
 *************************************************/
-bool CDatabase::user_login_func(string user_login, string user_pass)
+bool CDBManager::user_login_func(string user_login, string user_pass)
 {
 	//string user_register_sql = "select * from jt_users where user_login = "13814381438" and user_pass = "123456";";
 	string sql = "select * from jt_users where user_login = " + user_login + " and user_pass = " + user_pass;
