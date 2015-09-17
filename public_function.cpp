@@ -1,4 +1,4 @@
-/*****************************************
+ï»¿/*****************************************
 	> File Name : public_function.cpp
 	> Description : some public function
 	> Author : linden
@@ -27,9 +27,9 @@ unsigned char CPublicFunction::get_bcc_data(unsigned char *data,int len){
 
 /************************************************
 Function : GenerateCRC32
-Description : CRC32Ëã·¨
+Description : CRC32ç®—æ³•
 Input : unsigned char *DataBuf
-	unsigned long len,×¢Òâ´«½øÀ´µÄ³¤¶È
+	unsigned long len,æ³¨æ„ä¼ è¿›æ¥çš„é•¿åº¦
 Output :
 Return : crc
 Others :
@@ -44,7 +44,7 @@ unsigned long byte_int(unsigned char *bytes){
 
 unsigned long CPublicFunction::GenerateCRC32(unsigned char *DataBuf,unsigned long len){   
 	unsigned char bSrc[4];
-	unsigned int crc;	//linuxÏÂÒª°Ñlong¸Ä³Éint£¬win64ÏÂlong int ¶¼ÊÇ4£¬linuxÏÂ64Î»£¬intÊÇ4£¬longÊÇ8
+	unsigned int crc;	//linuxä¸‹è¦æŠŠlongæ”¹æˆintï¼Œwin64ä¸‹long int éƒ½æ˜¯4ï¼Œlinuxä¸‹64ä½ï¼Œintæ˜¯4ï¼Œlongæ˜¯8
 	unsigned long i,j;
 	unsigned int temp;
 	crc = 0xFFFFFFFF;
@@ -93,12 +93,13 @@ unsigned long CPublicFunction::GenerateCRC32(unsigned char *DataBuf,unsigned lon
 }
 
 /************************************************
-º¯ÊıÃû³Æ:AsciiStrToBcd
-º¯Êı¹¦ÄÜ:½«AscÂë×ª»»³ÉBCDÊı¾İ
-ÊäÈë²ÎÊı:unsigned char *b
+Function : AsciiStrToBcd
+Description : å°†Ascç è½¬æ¢æˆBCDæ•°æ®
+Input : unsigned char *b
 		unsigned char len
-Êä³ö²ÎÊı:unsigned char *outbuf
-·µ»ØËµÃ÷:
+Output : unsigned char *outbuf
+Return : 
+Others :
 *************************************************/
 unsigned char tohex(unsigned char b)
 {
@@ -139,11 +140,12 @@ void CPublicFunction::AsciiStrToBcd(unsigned char *outbuf,unsigned char *b,int l
 }
 
 /************************************************
-º¯ÊıÃû³Æ:DecTo2Hex
-º¯Êı¹¦ÄÜ:½«10½øÖÆÊıÖµ×ª»»³É2Î»µÄ16HEX
-ÊäÈë²ÎÊı:int dec
-Êä³ö²ÎÊı:char *data
-·µ»ØËµÃ÷:
+Function : DecTo2Hex
+Description : å°†10è¿›åˆ¶æ•°å€¼è½¬æ¢æˆ2ä½çš„16HEX
+Input : int dec
+Output : char *data
+Return :
+Others :
 *************************************************/
 void CPublicFunction::DecTo2Hex(int dec,char *data)
 {

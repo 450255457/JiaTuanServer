@@ -11,8 +11,6 @@
 #include <iostream>
 #include <string.h>
 
-#define BUFMAXSIZE	1300
-
 using namespace std;
 
 class CPublicFunction
