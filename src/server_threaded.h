@@ -5,8 +5,8 @@
 > Date : 2015-08-31
 *******************************************/
 
-#ifndef _SERVER_THREADED_H
-#define _SERVER_THREADED_H
+#ifndef _SERVER_THREADED_H_
+#define _SERVER_THREADED_H_
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -24,7 +24,7 @@
 #include <json/json.h>
 
 #include "workqueue.h"
-#include "data_base.h"
+#include "dbmanager.h"
 
 /* Port to listen on. */
 #define SERVER_PORT 8090
