@@ -59,13 +59,13 @@ extern "C" {
 /** Structure to define the backend of a given event_base. */
 struct eventop {
 	/** The name of this backend. */
-	const char *name;
+	const char *name;	//后端I/O复用技术的名称
 	/** Function to set up an event_base to use this backend.  It should
 	 * create a new structure holding whatever information is needed to
 	 * run the backend, and return it.  The returned pointer will get
 	 * stored by event_init into the event_base.evbase field.  On failure,
 	 * this function should return NULL. */
-	void *(*init)(struct event_base *);
+	void *(*init)(struct event_base *);	//初始化函数
 	/** Enable reading/writing on a given fd or signal.  'events' will be
 	 * the events that we're trying to enable: one or more of EV_READ,
 	 * EV_WRITE, EV_SIGNAL, and EV_ET.  'old' will be those events that
@@ -74,28 +74,33 @@ struct eventop {
 	 * fdinfo field below.  It will be set to 0 the first time the fd is
 	 * added.  The function should return 0 on success and -1 on error.
 	 */
-	int (*add)(struct event_base *, evutil_socket_t fd, short old, short events, void *fdinfo);
+	int (*add)(struct event_base *, evutil_socket_t fd, short old, short events, void *fdinfo);	//注册事件
 	/** As "add", except 'events' contains the events we mean to disable. */
-	int (*del)(struct event_base *, evutil_socket_t fd, short old, short events, void *fdinfo);
+	int (*del)(struct event_base *, evutil_socket_t fd, short old, short events, void *fdinfo);	//删除事件
 	/** Function to implement the core of an event loop.  It must see which
 	    added events are ready, and cause event_active to be called for each
 	    active event (usually via event_io_active or such).  It should
 	    return 0 on success and -1 on error.
 	 */
-	int (*dispatch)(struct event_base *, struct timeval *);
+	int (*dispatch)(struct event_base *, struct timeval *);	//等待事件
 	/** Function to clean up and free our data from the event_base. */
-	void (*dealloc)(struct event_base *);
+	void (*dealloc)(struct event_base *);	//释放I/O复用机制使用的资源
 	/** Flag: set if we need to reinitialize the event base after we fork.
 	 */
-	int need_reinit;
+	int need_reinit;	//程序调用fork之后是否需要重新初始化event_base
 	/** Bit-array of supported event_method_features that this backend can
 	 * provide. */
+	/* I/O复用技术支持的一些特性,可选如下3个值的按或位:EV_FEATURE_ET(支持边沿触发事件EV_ET),EV_FEATURE_O1(事件检测算法的复杂度是O(1))
+	* 和EV_FEATURE_FDS(不仅能监听socket上的事件,还能监听其他类型的文件描述符上的事件)*/
 	enum event_method_feature features;
 	/** Length of the extra information we should record for each fd that
 	    has one or more active events.  This information is recorded
 	    as part of the evmap entry for each fd, and passed as an argument
 	    to the add and del functions above.
 	 */
+	/* 有的I/O复用机制需要为每个I/O事件队列和信号事件队列分配额外的内存,以避免同一个文件描述符被重复插入I/O复用机制的事件表中.
+	* evmap_io_add(或evmap_io_del)函数在调用eventop的add(或del)方法时,将这段内存的起始地址作为第5个参数传递给add(或del)方法.
+	* 下面这个成员则指定了这段内存的长度*/
 	size_t fdinfo_len;
 };
 

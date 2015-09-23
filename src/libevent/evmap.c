@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2007-2012 Niels Provos and Nick Mathewson
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,6 +54,7 @@
 /** An entry for an evmap_io list: notes all the events that want to read or
 	write on a given fd, and the number of each.
   */
+// I/O事件队列(确切地说,evmap_io.events才是I/O事件队列)
 struct evmap_io {
 	struct event_list events;
 	ev_uint16_t nread;
@@ -62,6 +63,7 @@ struct evmap_io {
 
 /* An entry for an evmap_signal list: notes all the events that want to know
    when a signal triggers. */
+/* 信号事件队列(确切地说,evmap_signal.events才是信号事件队列) */
 struct evmap_signal {
 	struct event_list events;
 };
@@ -259,11 +261,13 @@ evmap_io_init(struct evmap_io *entry)
 
 /* return -1 on error, 0 on success if nothing changed in the event backend,
  * and 1 on success if something did. */
-int
-evmap_io_add(struct event_base *base, evutil_socket_t fd, struct event *ev)
+int evmap_io_add(struct event_base *base, evutil_socket_t fd, struct event *ev)
 {
+	//获得event_base的后端I/O复用机制实例
 	const struct eventop *evsel = base->evsel;
+	//获得event_base中文件描述符与I/O事件队列的映射表(哈希表或数组)
 	struct event_io_map *io = &base->io;
+	// fd参数对应的 I/O事件队列
 	struct evmap_io *ctx = NULL;
 	int nread, nwrite, retval = 0;
 	short res = 0, old = 0;
@@ -275,11 +279,13 @@ evmap_io_add(struct event_base *base, evutil_socket_t fd, struct event *ev)
 		return 0;
 
 #ifndef EVMAP_USE_HT
+	// I/O事件队列数组io.entries中,每个文件描述符占用一项.如果fd大于当前数组的大小,则增加数组的大小(扩大后的数组的容量要大于fd)
 	if (fd >= io->nentries) {
 		if (evmap_make_space(io, fd, sizeof(struct evmap_io *)) == -1)
 			return (-1);
 	}
 #endif
+	// 下面这个宏根据EVMAP_USE_HT是否被定义而有不同的实现,但目的都是创建ctx,在映射表io中为fd和ctx添加映射关系
 	GET_IO_SLOT_AND_CTOR(ctx, io, fd, evmap_io, evmap_io_init,
 						 evsel->fdinfo_len);
 
@@ -317,6 +323,7 @@ evmap_io_add(struct event_base *base, evutil_socket_t fd, struct event *ev)
 		/* XXX(niels): we cannot mix edge-triggered and
 		 * level-triggered, we should probably assert on
 		 * this. */
+		// 往事件多路分发器中注册事件.add是事件多路分发器的接口函数之一.对不同的后端I/O复用机制,这些接口函数有不同的实现.
 		if (evsel->add(base, ev->ev_fd,
 			old, (ev->ev_events & EV_ET) | res, extra) == -1)
 			return (-1);
@@ -325,6 +332,7 @@ evmap_io_add(struct event_base *base, evutil_socket_t fd, struct event *ev)
 
 	ctx->nread = (ev_uint16_t) nread;
 	ctx->nwrite = (ev_uint16_t) nwrite;
+	// 将ev插到I/O事件队列ctx的尾部.ev_io_next是定义在event-internal.h文件中的宏:#define ev_io_next	_ev.ev_io.ev_io_next
 	TAILQ_INSERT_TAIL(&ctx->events, ev, ev_io_next);
 
 	return (retval);
