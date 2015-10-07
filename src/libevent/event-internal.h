@@ -175,40 +175,51 @@ extern int _event_debug_mode_on;
 struct event_base {
 	/** Function pointers and other data to describe this event_base's
 	 * backend. */
+	/* 初始化Reactor的时候选择一种后端I/O复用机制,并记录在如下字段中 */
 	const struct eventop *evsel;
 	/** Pointer to backend-specific data. */
+	/* 指向I/O复用机制真正存储的数据，它通过evsel成员的init函数来初始化 */
 	void *evbase;
 
 	/** List of changes to tell backend about at next dispatch.  Only used
 	 * by the O(1) backends. */
+	/* 事件变化队列．其用途是：如果一个文件描述符上注册的事件被多次修改，则可以使用缓冲来避免重复的系统调用
+	(比如epoll_ctl).它仅能用于时间复杂度为O(1)的I/O复用技术*/
 	struct event_changelist changelist;
 
 	/** Function pointers used to describe the backend that this event_base
 	 * uses for signals */
+	/* 指向信号的后端处理机制，目前仅在signal.h文件中定义了一种处理方法 */
 	const struct eventop *evsigsel;
 	/** Data to implement the common signal handelr code. */
+	/* 信号事件处理器使用的数据结构，其中封装了一个由socketpair创建的管道．它用于信号处理函数和事件多路分发器之间的通信 */
 	struct evsig_info sig;
-
+	/* 添加到该event_base的虚拟事件，所有事件和激活事件的数量 */
 	/** Number of virtual events */
 	int virtual_event_count;
 	/** Number of total events added to this event_base */
 	int event_count;
 	/** Number of total events active in this event_base */
 	int event_count_active;
-
+	
 	/** Set if we should terminate the loop once we're done processing
 	 * events. */
+	/* 是否执行完活动事件队列上剩余的任务之后就退出事件循环 */
 	int event_gotterm;
 	/** Set if we should terminate the loop immediately */
+	/* 是否立即退出事件循环，而不管是否还有任务需要处理 */
 	int event_break;
 	/** Set if we should start a new instance of the loop immediately. */
+	/* 是否应该启动一个新的事件循环 */
 	int event_continue;
 
 	/** The currently running priority of events */
+	/* 目前正在处理的活动事件队列的优先级 */
 	int event_running_priority;
 
 	/** Set if we're running the event_base_loop function, to prevent
 	 * reentrant invocation. */
+	/* 事件循环是否已经启动 */
 	int running_loop;
 
 	/* Active event management. */
@@ -216,14 +227,17 @@ struct event_base {
 	 * have triggered, and whose callbacks need to be called).  Low
 	 * priority numbers are more important, and stall higher ones.
 	 */
+	/* 活动事件队列数组．索引值越小的队列，优先级越高．高优先级的活动事件队列中的事件处理器将被优先处理 */
 	struct event_list *activequeues;
 	/** The length of the activequeues array */
+	/* 活动事件队列数组的大小,即该event_base一共有nactivequeues个不同优先级的活动事件队列 */
 	int nactivequeues;
 
 	/* common timeout logic */
 
 	/** An array of common_timeout_list* for all of the common timeout
 	 * values we know. */
+	/* 下面3个成员用于管理通用定时器队列 */
 	struct common_timeout_list **common_timeout_queues;
 	/** The number of entries used in common_timeout_queues */
 	int n_common_timeouts;
@@ -232,20 +246,24 @@ struct event_base {
 
 	/** List of defered_cb that are active.  We run these after the active
 	 * events. */
+	/* 存放延迟回调函数的链表.事件循环每次成功处理完一个活动事件队列中的所有事件之后,就调用一次延迟回调函数 */
 	struct deferred_cb_queue defer_queue;
 
 	/** Mapping from file descriptors to enabled (added) events */
+	/* 文件描述符和I/O事件之间的映射关系表 */
 	struct event_io_map io;
 
 	/** Mapping from signal numbers to enabled (added) events. */
+	/* 信号值和信号事件之间的映射关系表 */
 	struct event_signal_map sigmap;
 
 	/** All events that have been enabled (added) in this event_base */
+	/* 注册事件队列,存放I/O事件处理器和信号事件处理器 */
 	struct event_list eventqueue;
 
 	/** Stored timeval; used to detect when time is running backwards. */
 	struct timeval event_tv;
-
+	/* 时间堆 */
 	/** Priority queue of events with timeouts. */
 	struct min_heap timeheap;
 
@@ -260,20 +278,21 @@ struct event_base {
 	/** Second in which we last updated tv_clock_diff, in monotonic time. */
 	time_t last_updated_clock_diff;
 #endif
-
+/* 多线程支持 */
 #ifndef _EVENT_DISABLE_THREAD_SUPPORT
 	/* threading support */
 	/** The thread currently running the event_loop for this base */
-	unsigned long th_owner_id;
+	unsigned long th_owner_id;	/* 当前运行该event_base的事件循环的线程 */
 	/** A lock to prevent conflicting accesses to this event_base */
-	void *th_base_lock;
+	void *th_base_lock;	/* 对event_base的独占锁 */
 	/** The event whose callback is executing right now */
+	/* 当前事件循环正在执行哪个事件处理器的回调函数 */
 	struct event *current_event;
 	/** A condition that gets signalled when we're done processing an
 	 * event with waiters on it. */
 	void *current_event_cond;
 	/** Number of threads blocking on current_event_cond. */
-	int current_event_waiters;
+	int current_event_waiters;	/* 等待current_event_cond的线程数 */
 #endif
 
 #ifdef WIN32

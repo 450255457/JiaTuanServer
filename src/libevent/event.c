@@ -1551,8 +1551,7 @@ event_loop(int flags)
 	return event_base_loop(current_base, flags);
 }
 
-int
-event_base_loop(struct event_base *base, int flags)
+int event_base_loop(struct event_base *base, int flags)
 {
 	const struct eventop *evsel = base->evsel;
 	struct timeval tv;
@@ -1563,6 +1562,7 @@ event_base_loop(struct event_base *base, int flags)
 	 * as we invoke user callbacks. */
 	EVBASE_ACQUIRE_LOCK(base, th_base_lock);
 
+	/* 一个event_base仅允许运行一个事件循环 */
 	if (base->running_loop) {
 		event_warnx("%s: reentrant invocation.  Only one event_base_loop"
 		    " can run on each event_base at once.", __func__);
@@ -1570,10 +1570,10 @@ event_base_loop(struct event_base *base, int flags)
 		return -1;
 	}
 
-	base->running_loop = 1;
+	base->running_loop = 1;	/* 标记该event_base已经开始运行 */
 
-	clear_time_cache(base);
-
+	clear_time_cache(base);	/* 清除event_base的系统时间缓存 */
+	/* 设置信号事件的event_base实例 */
 	if (base->sig.ev_signal_added && base->sig.ev_n_signals_added)
 		evsig_set_base(base);
 
@@ -1597,19 +1597,22 @@ event_base_loop(struct event_base *base, int flags)
 			break;
 		}
 
-		timeout_correct(base, &tv);
+		timeout_correct(base, &tv);	/* 校准系统时间 */
 
 		tv_p = &tv;
 		if (!N_ACTIVE_CALLBACKS(base) && !(flags & EVLOOP_NONBLOCK)) {
+			/* 获取时间堆上堆顶元素的超时值,即I/O复用系统调用本次应该设置的超时值 */
 			timeout_next(base, &tv_p);
 		} else {
 			/*
 			 * if we have active events, we just poll new events
 			 * without waiting.
 			 */
+			/* 如果有就绪事件尚未处理,则将I/O复用系统调用的超时时间"置0",这样I/O复用系统调用直接返回,程序也就可以立即处理就绪事件了 */
 			evutil_timerclear(&tv);
 		}
 
+		/* 如果event_base中没有注册任何事件,则直接退出事件循环 */
 		/* If we have no events, we just exit */
 		if (!event_haveevents(base) && !N_ACTIVE_CALLBACKS(base)) {
 			event_debug(("%s: no events registered.", __func__));
@@ -1617,11 +1620,12 @@ event_base_loop(struct event_base *base, int flags)
 			goto done;
 		}
 
+		/* 更新系统时间,并清空时间缓存 */
 		/* update last old time */
 		gettime(base, &base->event_tv);
 
 		clear_time_cache(base);
-
+		/* 调用事件多路分发器的dispatch方法等待事件,将就绪事件插入活动事件队列 */
 		res = evsel->dispatch(base, tv_p);
 
 		if (res == -1) {
@@ -1631,11 +1635,12 @@ event_base_loop(struct event_base *base, int flags)
 			goto done;
 		}
 
-		update_time_cache(base);
-
+		update_time_cache(base);	/* 将时间缓存更新为当前系统时间 */
+		/* 检查时间堆上的到期事件并依次执行之 */
 		timeout_process(base);
 
 		if (N_ACTIVE_CALLBACKS(base)) {
+			/* 调用event_process_active函数依次处理就绪的信号事件和I/O事件 */
 			int n = event_process_active(base);
 			if ((flags & EVLOOP_ONCE)
 			    && N_ACTIVE_CALLBACKS(base) == 0
@@ -1647,6 +1652,7 @@ event_base_loop(struct event_base *base, int flags)
 	event_debug(("%s: asked to terminate loop.", __func__));
 
 done:
+	/* 事件循环结束,清空时间缓存,并设置停止循环标志 */
 	clear_time_cache(base);
 	base->running_loop = 0;
 
