@@ -1,4 +1,4 @@
-/*****************************************
+﻿/*****************************************
 > File Name : server_threaded.c
 > Description : server_threaded.c  file
 > Author : linden
@@ -21,6 +21,7 @@ static int setnonblock(int fd) {
 
 	flags = fcntl(fd, F_GETFL);
 	if (flags < 0) return flags;
+	/* 非阻塞I/O;如果read调用没有可读取的数据,或者write操作阻塞,read或write调用返回-1和EAGAIN错误 */
 	flags |= O_NONBLOCK;
 	if (fcntl(fd, F_SETFL, flags) < 0) return -1;
 	return 0;
@@ -63,7 +64,7 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
 	int nbytes;
 	nbytes = EVBUFFER_LENGTH(bev->input);
 	evbuffer_remove(bev->input, data, nbytes);
-	//����data
+	//解析data
 	string sdata = data;
 	printf("recv sdata : %s\n", sdata.c_str());
 	Json::Reader reader;
@@ -177,6 +178,7 @@ void on_accept(int fd, short ev, void *arg) {
 	printf("Run accept fd:%d\n", fd);
 	/* Set the client socket to non-blocking mode. */
 	if (setnonblock(client_fd) < 0) {
+		;
 		warn("failed to set client socket to non-blocking");
 		close(client_fd);
 		return;
