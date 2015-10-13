@@ -260,7 +260,7 @@ void on_accept(int fd, short ev, void *arg) {
 * Run the server.  This function blocks, only returning when the server has terminated.
 */
 int runServer(void) {
-	int listenfd;
+	int sockfd;
 	struct sockaddr_in listen_addr;
 	struct event ev_accept;
 	int reuseaddr_on;
@@ -268,9 +268,18 @@ int runServer(void) {
 	/* Initialize libevent. */
 	event_init();
 
-	/* Set signal handlers */
+	/* Set signal handlers
+	 sigset_t：信号集,其被定义为一种数据类型
+	 struct sigaction {
+	 void     (*sa_handler)(int);	//此参数和signal()的参数handler 相同, 代表新的信号处理函数
+	 void     (*sa_sigaction)(int, siginfo_t *, void *);
+	 sigset_t   sa_mask;			//用来设置在处理该信号时暂时将sa_mask 指定的信号搁置
+	 int        sa_flags;			//用来设置信号处理的其他相关操作,  A_NOCLDSTOP: 如果参数signum 为SIGCHLD, 则当子进程暂停时并不会通知父进程;SA_RESTART: 被信号中断的系统调用会自行重启;
+	 void     (*sa_restorer)(void);	//此参数没有使用
+	 };
+	*/
 	sigset_t sigset;
-	sigemptyset(&sigset);
+	sigemptyset(&sigset);	//初始化信号集，信号集里面的所有信号被清空
 	/*struct sigaction siginfo = {
 		.sa_handler = sighandler,
 		.sa_mask = sigset,
@@ -280,49 +289,49 @@ int runServer(void) {
 	siginfo.sa_handler = sighandler;
 	siginfo.sa_mask = sigset;
 	siginfo.sa_flags = SA_RESTART;
-	sigaction(SIGINT, &siginfo, NULL);
-	sigaction(SIGTERM, &siginfo, NULL);
+	sigaction(SIGINT, &siginfo, NULL);	//程序终止(interrupt)信号, 在用户键入INTR字符(通常是Ctrl-C)时发出 
+	sigaction(SIGTERM, &siginfo, NULL);	//程序结束(terminate)信号, 与SIGKILL不同的是该信号可以被阻塞和处理.通常用来要求程序自己正常退出.shell命令kill缺省产生这个信号.
 	/* Create our listening socket. */
-	listenfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (listenfd < 0) {
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (sockfd < 0) {
 		err(1, "listen failed");
 	}
 	memset(&listen_addr, 0, sizeof(listen_addr));
 	listen_addr.sin_family = AF_INET;
 	listen_addr.sin_addr.s_addr = INADDR_ANY;
 	listen_addr.sin_port = htons(SERVER_PORT);
-	if (bind(listenfd, (struct sockaddr *)&listen_addr, sizeof(listen_addr)) < 0) {
+	if (bind(sockfd, (struct sockaddr *)&listen_addr, sizeof(listen_addr)) < 0) {
 		err(1, "bind failed");
 	}
-	if (listen(listenfd, CONNECTION_BACKLOG) < 0) {
+	if (listen(sockfd, CONNECTION_BACKLOG) < 0) {
 		err(1, "listen failed");
 	}
 	reuseaddr_on = 1;
-	setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &reuseaddr_on, sizeof(reuseaddr_on));
+	setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &reuseaddr_on, sizeof(reuseaddr_on));
 
 	/* Set the socket to non-blocking, this is essential in event
 	* based programming with libevent. */
-	if (setnonblock(listenfd) < 0) {
+	if (setnonblock(sockfd) < 0) {
 		err(1, "failed to set server socket to non-blocking");
 	}
 
 	if ((evbase_accept = event_base_new()) == NULL) {
 		perror("Unable to create socket accept event base");
-		close(listenfd);
+		close(sockfd);
 		return 1;
 	}
 
 	/* Initialize work queue. */
 	if (workqueue_init(&workqueue, NUM_THREADS)) {
 		perror("Failed to create work queue");
-		close(listenfd);
+		close(sockfd);
 		workqueue_shutdown(&workqueue);
 		return 1;
 	}
 
 	/* We now have a listening socket, we create a read event to
 	* be notified when a client connects. */
-	event_set(&ev_accept, listenfd, EV_READ | EV_PERSIST, on_accept, (void *)&workqueue);
+	event_set(&ev_accept, sockfd, EV_READ | EV_PERSIST, on_accept, (void *)&workqueue);
 	event_base_set(evbase_accept, &ev_accept);
 	event_add(&ev_accept, NULL);
 
@@ -334,7 +343,7 @@ int runServer(void) {
 	event_base_free(evbase_accept);
 	evbase_accept = NULL;
 
-	close(listenfd);
+	close(sockfd);
 
 	printf("Server shutdown.\n");
 

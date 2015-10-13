@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Multithreaded work queue.
  * Copyright (c) 2012 Ronald Bennett Cemer
  * This software is licensed under the BSD license.
@@ -99,7 +99,7 @@ void workqueue_shutdown(workqueue_t *workqueue) {
 	pthread_mutex_lock(&workqueue->jobs_mutex);
 	workqueue->workers = NULL;
 	workqueue->waiting_jobs = NULL;
-	pthread_cond_broadcast(&workqueue->jobs_cond);
+	pthread_cond_broadcast(&workqueue->jobs_cond);	//释放阻塞的所有线程
 	pthread_mutex_unlock(&workqueue->jobs_mutex);
 }
 
