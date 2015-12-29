@@ -5,7 +5,7 @@ each client connection, and closes each connection once it is flushed.
 
 Where possible, it exits cleanly in response to a SIGINT (ctrl-c).
 
-gcc -g -o hello-world hello-world.c -levent
+g++ -g -o hello-world hello-world.c -levent
 */
 
 
@@ -71,8 +71,8 @@ int main(int argc, char **argv)
 		fprintf(stderr, "Could not create/add a signal event!\n");
 		return 1;
 	}
-	printf("Server is running on %d...", PORT);
 	event_base_dispatch(base);
+	printf("Server is running on %d...\n", PORT);
 
 	evconnlistener_free(listener);
 	event_free(signal_event);
