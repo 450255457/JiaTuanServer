@@ -47,7 +47,7 @@ int main(int argc, char **argv)
 	WSADATA wsa_data;
 	WSAStartup(0x0201, &wsa_data);
 #endif
-	printf("1Server is running on %d...\n", PORT);
+
 	base = event_base_new();
 	if (!base) {
 		fprintf(stderr, "Could not initialize libevent!\n");
@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 		fprintf(stderr, "Could not create a listener!\n");
 		return 1;
 	}
-	printf("2Server is running on %d...\n", PORT);
+	printf("Server is running on %d...\n", PORT);
 	//#define evsignal_new(b, x, cb, arg)		event_new((b), (x), EV_SIGNAL | EV_PERSIST, (cb), (arg))
 	signal_event = evsignal_new(base, SIGINT, signal_cb, (void *)base);
 
@@ -73,7 +73,6 @@ int main(int argc, char **argv)
 		return 1;
 	}
 	event_base_dispatch(base);
-	printf("3Server is running on %d...\n", PORT);
 
 	evconnlistener_free(listener);
 	event_free(signal_event);
