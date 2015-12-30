@@ -32,6 +32,7 @@ static const char MESSAGE[] = "Hello, World!\n";
 static const int PORT = 8090;
 
 static void listener_cb(struct evconnlistener *, evutil_socket_t, struct sockaddr *, int socklen, void *);
+static void conn_readcb(struct bufferevent *, void *);
 static void conn_writecb(struct bufferevent *, void *);
 static void conn_eventcb(struct bufferevent *, short, void *);
 static void signal_cb(evutil_socket_t, short, void *);
@@ -93,13 +94,23 @@ static void listener_cb(struct evconnlistener *listener, evutil_socket_t fd, str
 		event_base_loopbreak(base);
 		return;
 	}
-	bufferevent_setcb(bev, NULL, conn_writecb, conn_eventcb, NULL);
+	bufferevent_setcb(bev, conn_readcb, conn_writecb, conn_eventcb, NULL);
 	bufferevent_enable(bev, EV_WRITE);
-	bufferevent_disable(bev, EV_READ);
+	bufferevent_enable(bev, EV_READ);
 
 	bufferevent_write(bev, MESSAGE, strlen(MESSAGE));
 }
 
+static void conn_readcb(struct bufferevent *bev, void *user_data)
+{
+	/* 获取bufferevent中的读和写的指针 */
+	/* This callback is invoked when there is data to read on bev. */
+	struct evbuffer *input = bufferevent_get_input(bev);
+	struct evbuffer *output = bufferevent_get_output(bev);
+	/* 把读入的数据全部复制到写内存中 */
+	/* Copy all the data from the input buffer to the output buffer. */
+	evbuffer_add_buffer(output, input);
+}
 static void conn_writecb(struct bufferevent *bev, void *user_data)
 {
 	struct evbuffer *output = bufferevent_get_output(bev);
