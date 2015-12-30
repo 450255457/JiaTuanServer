@@ -12,7 +12,7 @@
 #include <sys/socket.h>	//socket
 #include <arpa/inet.h>	//inet_addr
 #include <iostream>
-#include <json/json.h>
+//#include <json/json.h>
 
 #define PORT		8090
 #define IPADDRESS	"127.0.0.1"
@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 {
 	int sockfd;
 	struct sockaddr_in server;
-	string message = "";
+	string message = "test buf";
 	//char message[1024] = { 0 };
 	char server_reply[2048] = { 0 };
 
@@ -54,22 +54,22 @@ int main(int argc, char *argv[])
 		//sprintf(message, "POST / HTTP/1.1\r\nHost: www.qujiatuan.com\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: 12\r\nConnection:close\r\n\r\nsn=123&n=asa");
 	//sprintf(message, "sn=123&n=asa");Json::Value root;
 
-		Json::Value root;
+	//	Json::Value root;
 	
-		root["FunctionName"] = "login";
+	//	root["FunctionName"] = "login";
 		//root["CountryCode"] = 86;
-		root["User_login"] = "13814381438";
-		root["User_pass"] = "123456";
+	//	root["User_login"] = "13814381438";
+	//	root["User_pass"] = "123456";
 	
 		// 转换为字符串（带格式）
 		//root.toStyledString();
 		//std::string out = root.toStyledString();
 		// 输出无格式json字符串
-		Json::FastWriter writer;
-		std::string out = writer.write(root);
-		std::cout << out << std::endl;
+	//	Json::FastWriter writer;
+	//	std::string out = writer.write(root);
+	//	std::cout << out << std::endl;
 		//memcpy(message, "\x54\x89\x0\x1\x0\x4\x1\x2\x3\x4\x0\xCD\xEA",13);
-		message = out;
+	//	message = out;
 		printf("Send message : %s\n",message.c_str());
 
 		//Send some data
