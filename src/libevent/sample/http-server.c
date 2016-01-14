@@ -313,8 +313,7 @@ syntax(void)
 	fprintf(stdout, "Syntax: http-server <docroot>\n");
 }
 
-int
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	struct event_base *base;
 	struct evhttp *http;

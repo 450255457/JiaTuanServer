@@ -97,7 +97,22 @@ static void listener_cb(struct evconnlistener *listener, evutil_socket_t fd, str
 	bufferevent_enable(bev, EV_WRITE);
 	bufferevent_disable(bev, EV_READ);
 
-	bufferevent_write(bev, MESSAGE, strlen(MESSAGE));
+	//bufferevent_write(bev, MESSAGE, strlen(MESSAGE));
+	FILE *fp;
+	long fileLen = 0;
+	if ((fp = fopen("text.txt", "rb")) != NULL)
+	{
+		fseek(fp, 0L, SEEK_END);
+		fileLen = ftell(fp);
+
+		fclose(fp);
+		return;
+	}
+	else
+	{
+		printf("file open failed!\n");
+		return;
+	}
 }
 
 static void conn_writecb(struct bufferevent *bev, void *user_data)

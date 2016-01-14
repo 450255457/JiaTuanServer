@@ -28,8 +28,7 @@
 
 #include <event.h>
 
-static void
-fifo_read(evutil_socket_t fd, short event, void *arg)
+static void fifo_read(evutil_socket_t fd, short event, void *arg)
 {
 	char buf[255];
 	int len;
@@ -70,8 +69,7 @@ fifo_read(evutil_socket_t fd, short event, void *arg)
 	fprintf(stdout, "Read: %s\n", buf);
 }
 
-int
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	struct event evfifo;
 #ifdef WIN32
@@ -93,6 +91,7 @@ main(int argc, char **argv)
 	const char *fifo = "event.fifo";
 	int socket;
 
+	//lstat:get file status
 	if (lstat(fifo, &st) == 0) {
 		if ((st.st_mode & S_IFMT) == S_IFREG) {
 			errno = EEXIST;
@@ -100,7 +99,7 @@ main(int argc, char **argv)
 			exit(1);
 		}
 	}
-
+	//unlink:call the unlink function to remove the specified file
 	unlink(fifo);
 	if (mkfifo(fifo, 0600) == -1) {
 		perror("mkfifo");
