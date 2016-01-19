@@ -98,13 +98,13 @@ static void listener_cb(struct evconnlistener *listener, evutil_socket_t fd, str
 	bufferevent_disable(bev, EV_READ);
 
 	//bufferevent_write(bev, MESSAGE, strlen(MESSAGE));
+	//测试1M写的情况
+
 	FILE *fp;
-	long fileLen = 0;
+	char *filepoint = NULL;
 	if ((fp = fopen("text.txt", "rb")) != NULL)
 	{
-		fseek(fp, 0L, SEEK_END);
-		fileLen = ftell(fp);
-
+		fread(filepoint, 1, 1024 * 1024, fp);
 		fclose(fp);
 		return;
 	}
@@ -113,6 +113,7 @@ static void listener_cb(struct evconnlistener *listener, evutil_socket_t fd, str
 		printf("file open failed!\n");
 		return;
 	}
+	bufferevent_write(bev, filepoint, 1024*1024);
 }
 
 static void conn_writecb(struct bufferevent *bev, void *user_data)
