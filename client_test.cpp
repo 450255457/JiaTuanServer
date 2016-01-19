@@ -78,16 +78,21 @@ int main(int argc, char *argv[])
 			puts("Send failed");
 			return -1;
 		}
-
-		//Receive a reply from the server
-		if (recv(sockfd, server_reply, 2000, 0) < 0)
+		while (1)
 		{
-			puts("recv failed");
-		//	break;
+			//Receive a reply from the server
+			int n = recv(sockfd, server_reply, 1024 * 1024, 0);
+			if (n < 0)
+			{
+				puts("recv failed");
+				break;
+			}
+
+			puts("Server reply :");
+			printf("n = %d\n", n);
+			puts(server_reply);
 		}
 
-		puts("Server reply :");
-		puts(server_reply);
 //	}
 
 	close(sockfd);
