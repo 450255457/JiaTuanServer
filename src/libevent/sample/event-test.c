@@ -40,8 +40,7 @@ static void fifo_read(evutil_socket_t fd, short event, void *arg)
 	/* Reschedule this event */
 	event_add(ev, NULL);
 
-	fprintf(stderr, "fifo_read called with fd: %d, event: %d, arg: %p\n",
-	    (int)fd, event, arg);
+	fprintf(stderr, "fifo_read called with fd: %d, event: %d, arg: %p\n",(int)fd, event, arg);
 #ifdef WIN32
 	len = ReadFile((HANDLE)fd, buf, sizeof(buf) - 1, &dwBytesRead, NULL);
 

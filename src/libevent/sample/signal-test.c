@@ -32,8 +32,7 @@
 
 int called = 0;
 
-static void
-signal_cb(evutil_socket_t fd, short event, void *arg)
+static void signal_cb(evutil_socket_t fd, short event, void *arg)
 {
 	struct event *signal = arg;
 
@@ -45,8 +44,7 @@ signal_cb(evutil_socket_t fd, short event, void *arg)
 	called++;
 }
 
-int
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	struct event signal_int;
 	struct event_base* base;
@@ -63,8 +61,7 @@ main(int argc, char **argv)
 	base = event_base_new();
 
 	/* Initalize one event */
-	event_assign(&signal_int, base, SIGINT, EV_SIGNAL|EV_PERSIST, signal_cb,
-	    &signal_int);
+	event_assign(&signal_int, base, SIGINT, EV_SIGNAL|EV_PERSIST, signal_cb, &signal_int);
 
 	event_add(&signal_int, NULL);
 
