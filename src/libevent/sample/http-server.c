@@ -77,8 +77,7 @@ static const struct table_entry {
 };
 
 /* Try to guess a good content-type for 'path' */
-static const char *
-guess_content_type(const char *path)
+static const char * guess_content_type(const char *path)
 {
 	const char *last_period, *extension;
 	const struct table_entry *ent;
@@ -97,8 +96,7 @@ not_found:
 
 /* Callback used for the /dump URI, and for every non-GET request:
  * dumps all information to stdout and gives back a trivial 200 ok */
-static void
-dump_request_cb(struct evhttp_request *req, void *arg)
+static void dump_request_cb(struct evhttp_request *req, void *arg)
 {
 	const char *cmdtype;
 	struct evkeyvalq *headers;
@@ -145,8 +143,7 @@ dump_request_cb(struct evhttp_request *req, void *arg)
  * any other callback.  Like any evhttp server callback, it has a simple job:
  * it must eventually call evhttp_send_error() or evhttp_send_reply().
  */
-static void
-send_document_cb(struct evhttp_request *req, void *arg)
+static void send_document_cb(struct evhttp_request *req, void *arg)
 {
 	struct evbuffer *evb = NULL;
 	const char *docroot = arg;
@@ -307,8 +304,7 @@ done:
 		evbuffer_free(evb);
 }
 
-static void
-syntax(void)
+static void syntax(void)
 {
 	fprintf(stdout, "Syntax: http-server <docroot>\n");
 }

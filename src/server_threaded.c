@@ -23,7 +23,8 @@ static int setnonblock(int fd) {
 	if (flags < 0) return flags;
 	/* 非阻塞I/O;如果read调用没有可读取的数据,或者write操作阻塞,read或write调用返回-1和EAGAIN错误 */
 	flags |= O_NONBLOCK;
-	if (fcntl(fd, F_SETFL, flags) < 0) return -1;
+	if (fcntl(fd, F_SETFL, flags) < 0)
+		return -1;
 	return 0;
 }
 
@@ -314,8 +315,9 @@ int runServer(void) {
 	if (setnonblock(sockfd) < 0) {
 		err(1, "failed to set server socket to non-blocking");
 	}
-
-	if ((evbase_accept = event_base_new()) == NULL) {
+	evbase_accept = event_base_new();
+	if (NULL == evbase_accept)
+	{
 		perror("Unable to create socket accept event base");
 		close(sockfd);
 		return 1;
